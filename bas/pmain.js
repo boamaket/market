@@ -1,7 +1,7 @@
 Telegram.WebApp.ready();
 
 /* ================= CONFIG ================= */
-const BOT_TOKEN = "7514817340:AAGp_ILOdTeH77TXwLcQmv5NxSIWAzW80Ag";
+const BOT_TOKEN = "7514817340:AAHUpE5ZPEUZkkM4rq4smoV_nzWfmwWBVGc";
 const ADMIN_ID = 7979664801;
 
 /* ================= URL PARAMS ================= */
@@ -130,7 +130,7 @@ Product ID: ${product.id}
 Product price: ${product.price} ${product.currency}
 
 Our moderator will review shortly.
-WhatsApp 👉 +2348121697423
+WhatsApp 👉 +2349114301708
 `);
 
   const sellerOk = await sendMessage(product.sellerId, `
@@ -141,7 +141,7 @@ Product ID: ${product.id}
 Product price: ${product.price} ${product.currency}
 
 Funds will be added once approved.
-WhatsApp 👉 +2348121697423
+WhatsApp 👉 +2349114301708
 `);
 
   if(!buyerOk || !sellerOk){
