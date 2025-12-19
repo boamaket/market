@@ -111,17 +111,6 @@ const productsData = [
   url: "https://www.facebook.com/share/1By4oU18YF/?mibextid=wwXIfr"
 },
 {
-  id: "P1765670040110",
-  name: "2021 South Africa switch profile (can create page )",
-  description: "Don’t change details in haste so that you log will last long and useful to you.",
-  price: "3500",
-  currency: "NGN",
-  image: "https://i.ibb.co/1fXyhxZK/IMG-2950.png",
-  sellerId: 7227113353,
-  sellerContact: "+2347075433008",
-  url: "https://www.facebook.com/share/1C7qu1MnFD/?mibextid=wwXIfr"
-},
-{
   id: "P1765526244522",
   name: "AUSTRALIAN TIKTOK 229 FOLLOWERS",
   description: "Freshly spammed Australia TikTok with outlook mail. Followers on Amassing",
