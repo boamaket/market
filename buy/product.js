@@ -1,6 +1,39 @@
 // PRODUCTS DATA
 const productsData = [
 {
+  id: "P1766129405718",
+  name: "6years Facebook with switch profile",
+  description: "Asa Facebook",
+  price: "6000",
+  currency: "NGN",
+  image: "https://i.ibb.co/Hf2yFty4/A0-ED14-AF-932-B-4194-B2-E4-C85-A8-F5-F6673.jpg",
+  sellerId: 8398812994,
+  sellerContact: "+2348123246776",
+  url: "https://www.facebook.com/share/1ZK4hRQCm6/?mibextid=wwXIfr"
+},
+{
+  id: "P1766130008946",
+  name: "7years Facebook with switch profile",
+  description: "Asa Facebook",
+  price: "6000",
+  currency: "NGN",
+  image: "https://i.ibb.co/mVQkDgMN/BA5-BC98-A-A0-CD-432-D-B158-0-D35-AFE59694.jpg",
+  sellerId: 8398812994,
+  sellerContact: "+2348123246776",
+  url: "https://www.facebook.com/share/1AeumZkWAY/?mibextid=wwXIfr"
+},
+{
+  id: "P1766130621099",
+  name: "5year Facebook with switch profile",
+  description: "Asa Facebook",
+  price: "6000",
+  currency: "NGN",
+  image: "https://i.ibb.co/My2BL0Rj/18-F8-C898-87-A6-4-C1-C-A800-D986-C39801-C3.jpg",
+  sellerId: 8398812994,
+  sellerContact: "+2348123246776",
+  url: "https://www.facebook.com/share/1FNqzVBkSt/?mibextid=wwXIfr"
+},
+{
   id: "P1766124489545",
   name: "5yrs old Switch profile Facebook , has page and can create more page",
   description: "5yrs old switch profile Facebook with already created legit page and can create more .. affordable and has 100 💯 percent bombing response",
