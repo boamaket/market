@@ -34,17 +34,6 @@ const productsData = [
   url: "https://www.facebook.com/share/1FNqzVBkSt/?mibextid=wwXIfr"
 },
 {
-  id: "P1766124489545",
-  name: "5yrs old Switch profile Facebook , has page and can create more page",
-  description: "5yrs old switch profile Facebook with already created legit page and can create more .. affordable and has 100 💯 percent bombing response",
-  price: "4500",
-  currency: "NGN",
-  image: "https://i.ibb.co/nMvXy9Wx/IMG-3035.png",
-  sellerId: 7227113353,
-  sellerContact: "+2347075433008",
-  url: "https://www.facebook.com/share/1DC57RerzL/?mibextid=wwXIfr"
-},
-{
   id: "P1765970819643",
   name: "Foreign Tiktok Account | 28k Followers",
   description: "4 years Foreign Tiktok Account super cheap super affordable",
