@@ -78,17 +78,6 @@ const productsData = [
   url: "https://i.ibb.co/rbZnp2s/IMG-20240916-WA0013-1.jpg"
 },
 {
-  id: "P1765725968925",
-  name: "2024 300 plus Followers TikTok with real likes and followers , activities . It’s can actively send messages and follow",
-  description: "You may change details after login",
-  price: "4000",
-  currency: "NGN",
-  image: "https://i.ibb.co/GQPfj4RT/IMG-2956.png",
-  sellerId: 7227113353,
-  sellerContact: "+2349112516093",
-  url: "https://vm.tiktok.com/ZSHwga7h85fTE-f7Tvn/"
-},
-{
   id: "P1765665447828",
   name: "Facebook account",
   description: "Afghanistan",
