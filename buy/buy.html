@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buy Product — Intelligent Marketplace</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="product.js"></script>
+<style>
+  body { font-family: Arial,sans-serif; padding:20px; background:#f7f7f7; color:#111;
+  margin-top: -10px;
+  }
+  h2,h3 { margin-bottom:10px; }
+  .product { background:#fff; padding:15px; margin:15px 0; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.05); }
+.product img {
+    width: 180px;         /* fixed nice size */
+    max-width: 90%;       /* responsive on small screens */
+    display: block;
+    margin: 10px auto;    /* centers the image */
+    border-radius: 6px;
+}
+  .product-details p { margin:5px 0; }
+  button { padding:10px; margin:5px 0; cursor:pointer; border:none; border-radius:6px; background:#000; color:#fff; }
+
+  /* BUY MODAL */
+  #buyModal { 
+    display:none; 
+    position:fixed; top:0; left:0; right:0; bottom:0; 
+    background:rgba(0,0,0,0.6); 
+    justify-content:center; 
+    align-items:flex-start; 
+    overflow-y:auto;
+    padding:20px 10px;
+  }
+  #buyModal .modal-content { 
+    background:#fff; 
+    padding:20px; 
+    border-radius:10px; 
+    width:95%; 
+    max-width:500px;
+    word-break: break-word; 
+  }
+  #buyModal input, #buyModal select { width:100%; padding:10px; margin:10px 0; border-radius:6px; border:1px solid #ccc; }
+
+  /* COPY BOXES */
+  .copy-box {
+    background:#eefaff;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #8ed0ff;
+    font-size:17px;
+    font-weight:bold;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    word-break: break-word; 
+  }
+  .copy-btn {
+    padding:6px 10px;
+    background:#007bff;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    font-size:14px;
+    cursor:pointer;
+  }
+
+  .nav { display:flex; gap:10px; margin:20px 0; }
+  .nav button { flex:1; }
+  a { color:blue; }
+
+  #userInfo { margin-bottom:15px; display:flex; align-items:center; gap:10px; }
+  #userInfo img { border-radius:50%; width:60px; height:60px; object-fit:cover; }
+
+  /* MESSAGE BOX — UPDATED FOR FIXED TOP AND MANUAL CLOSE */
+  #msgBox {
+    display: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 16px;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 90%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    word-break: break-word;
+    cursor: pointer;
+  }
+
+  /* ========== THEME (ADDITIONAL RULES ADDED) ========== */
+  /* place toggle next to title */
+  h2 { display:inline-block; vertical-align: middle; margin:0; }
+  #themeToggle {
+    display:inline-block;
+    margin-left:12px;
+    vertical-align: middle;
+    padding:6px 10px;
+    border-radius:6px;
+    background:#000;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    font-size:16px;
+  }
+  /* MAKE BUY NOW BUTTON BIGGER */
+.nnbb {
+  width: 100%;
+  padding: 18px !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+  background: #1a73e8 !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  margin-top: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.nnbb2 {
+  width: 100%;
+  padding: 18px !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+  background: red !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  margin-top: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.buyBtn {
+  width: 100%;
+  padding: 18px !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+  background: #1a73e8 !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  margin-top: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+  /* Dark theme styles */
+  body.dark { background:#0f1113; color:#e6eef8; transition: background 0.25s, color 0.25s; }
+  body.dark .product { background:#151719; box-shadow:0 4px 12px rgba(0,0,0,0.5); }
+  body.dark .product-details p { color:#e6eef8; }
+  body.dark button { background:#222; color:#fff; }
+  body.dark .copy-box { background:#0f1720; border:1px solid #264653; color:#e6eef8; }
+  body.dark .copy-btn { background:#2563eb; color:#fff; }
+  body.dark #buyModal { background: rgba(0,0,0,0.7); }
+  body.dark #buyModal .modal-content { background:#101214; color:#e6eef8; border:1px solid #222; }
+  body.dark a { color:#66a6ff; }
+  body.dark #themeToggle { background:#fff; color:#000; }
+
+  /* ensure elements inside modal and a few inline styles adapt */
+  body.dark input, body.dark select { background:#0b0d0f; color:#e6eef8; border:1px solid #2b2f33; }
+  body.dark hr { border-top:1px solid #2a2a2a; }
+
+  /* small spacing tweak so header doesn't overlap content */
+  .header-wrap { margin-bottom:12px; display:block; }
+
+  /* ===== PAYMENT RESULT POPUP ===== */
+  #paymentPopup {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+  }
+  #paymentPopup .popup-content {
+    background: #fff;
+    padding: 25px;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.3);
+    animation: popIn 0.25s ease-out;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .popup-success { border: 2px solid #28a745; color:#155724; background:#d4edda; }
+  .popup-error { border: 2px solid #dc3545; color:#721c24; background:#f8d7da; }
+  .pname {
+    font-size:40px;
+  }
+  /* ============================
+   GLOBAL SMOOTH SCROLL
+============================ */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ============================
+   PRODUCT ENTRY ANIMATION
+============================ */
+.product {
+  animation: productSlideUp 0.6s ease both;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+@keyframes productSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================
+   PRODUCT CLICK / FOCUS EFFECT
+============================ */
+.product:active,
+.product:focus-within {
+  transform: scale(1.03) translateY(-8px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+}
+
+/* ============================
+   IMAGE SOFT ZOOM ON TOUCH
+============================ */
+.product img {
+  transition: transform 0.4s ease;
+}
+
+.product:active img {
+  transform: scale(1.06);
+}
+
+/* ============================
+   BUTTON PRESS EFFECT
+============================ */
+button {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:active {
+  transform: scale(0.96);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2) inset;
+}
+
+/* ============================
+   BUY MODAL SLIDE-UP MOBILE STYLE
+============================ */
+#buyModal {
+  animation: fadeInBg 0.25s ease both;
+}
+
+#buyModal .modal-content {
+  animation: slideUpModal 0.35s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+@keyframes slideUpModal {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInBg {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ============================
+   BTC SECTION SMOOTH TOGGLE
+============================ */
+#btcSection {
+  transition: all 0.35s ease;
+  overflow: hidden;
+}
+
+/* ============================
+   SUCCESS / ERROR POPUP BOOST
+============================ */
+#paymentPopup .popup-content {
+  animation: popBounce 0.35s ease both;
+}
+
+@keyframes popBounce {
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ============================
+   MESSAGE BOX SLIDE FROM TOP
+============================ */
+#msgBox {
+  animation: msgSlide 0.4s ease both;
+}
+
+@keyframes msgSlide {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* ============================
+   NAV BUTTON FLOAT EFFECT
+============================ */
+.nav button {
+  transition: transform 0.3s ease;
+}
+
+.nav button:hover {
+  transform: translateY(-4px);
+}
+
+/* ============================
+   USER CARD FADE
+============================ */
+#userInfo {
+  animation: fadeUser 0.6s ease both;
+}
+
+@keyframes fadeUser {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================
+   COPY BOX PULSE FEEDBACK
+============================ */
+.copy-box:active {
+  animation: pulseCopy 0.35s ease;
+}
+
+@keyframes pulseCopy {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+/* ============================
+   AUTO SCROLL FOCUS ANIMATION
+============================ */
+.product.focused {
+  animation: focusZoom 0.5s ease;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+  transform: scale(1.05);
+  border: 2px solid #1a73e8;
+}
+
+@keyframes focusZoom {
+  from {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+/* ============================
+   SCROLL-UP REVEAL ANIMATION
+============================ */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 0.7s ease;
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ================================
+   WHATSAPP ADS BANNER POPUP
+================================ */
+#adsBanner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(0,0,0,0.55);
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+#adsBanner .ads-content {
+  background: #fff;
+  padding: 22px;
+  width: 90%;
+  max-width: 380px;
+  border-radius: 14px;
+  text-align: center;
+  animation: popIn 0.25s ease-out;
+  position: relative;
+  color: #111;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.18);
+}
+
+/* Close button */
+#closeAds {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #444;
+}
+
+/* Join button */
+.ads-btn {
+  display: block;
+  margin-top: 12px;
+  background: #25D366;
+  color: #fff;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.ads-btn:active {
+  transform: scale(0.95);
+}
+
+/* animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* DARK MODE FIX */
+body.dark #adsBanner .ads-content {
+  background: #111416;
+  color: #fff;
+}
+/* === DARK MODE FIXES FOR WHATSAPP ADS BANNER === */
+body.dark #adsBanner .ads-content {
+  background:#111416;
+  color:#fff;
+}
+
+body.dark .ads-btn {
+  background:#25D366;
+  color:#fff !important;
+}
+
+body.dark #closeAds {
+  color:#fff !important;
+  font-weight:bold;
+  text-shadow:0 0 6px rgba(0,0,0,0.8);
+}
+.am {
+  font-size:25px;
+}
+</style>
+</head>
+
+<body>
+<!-- WALLET QUICK ACCESS (MINIMAL BLACK & WHITE) -->
+<div id="walletBtn">
+  <span class="wallet-icon"></span>
+  <span class="wallet-text">Wallet</span>
+</div>
+
+<script>
+/* =====================================
+   BLACK & WHITE WALLET UI (SELF CONTAINED)
+===================================== */
+(function () {
+  const style = document.createElement("style");
+  style.innerHTML = `
+    #walletBtn {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      background: #000;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 100000;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+
+    #walletBtn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+    }
+
+    #walletBtn:active {
+      transform: scale(0.96);
+    }
+
+    /* ICON */
+    .wallet-icon {
+      width: 18px;
+      height: 14px;
+      border: 2px solid #fff;
+      border-radius: 3px;
+      position: relative;
+    }
+
+    .wallet-icon::before {
+      content: "";
+      position: absolute;
+      right: -5px;
+      top: 3px;
+      width: 6px;
+      height: 6px;
+      border: 2px solid #fff;
+      border-left: none;
+      border-radius: 0 3px 3px 0;
+    }
+
+    /* DARK MODE SUPPORT (WHITE BUTTON) */
+    body.dark #walletBtn {
+      background: #fff;
+      color: #000;
+      box-shadow: 0 6px 18px rgba(255,255,255,0.15);
+    }
+
+    body.dark .wallet-icon {
+      border-color: #000;
+    }
+
+    body.dark .wallet-icon::before {
+      border-color: #000;
+    }
+  `;
+  document.head.appendChild(style);
+
+  document.getElementById("walletBtn").onclick = () => {
+    window.location.href = "wa.html";
+  };
+})();
+</script>
+<div class="header-wrap">
+  <h2>Intelligent Marketplace — Buy Products</h2>
+  <button id="themeToggle" aria-label="Toggle theme">🌙</button>
+</div>
+
+<!-- USER INFO -->
+<div id="userInfo">
+  <img id="profilePic" src="https://via.placeholder.com/60" alt="Profile">
+  <div>
+    <p id="fullName"></p>
+    <p id="username"></p>
+    <p id="userId"></p>
+  </div>
+</div>
+<div style="background:#fff4ce; padding:10px; margin-top:5px; border-left:4px solid #ffbb00; border-radius:6px; font-size:14px; color:#8a6d00; font-weight:bold;">
+⚠️ We show multiples of ads, in this webapp please stay patient for each ads, turning on ads blocker, might block some of our button from working expecialy selling of product.
+</div>
+  <p>Please make sure you  <a href="https://t.me/intelligentmarketbot?start=ar1810544353">start our bot </a> for success notification
+<!-- NAVIGATION -->
+<div class="nav">
+  <button id="sellBtn" class="nnbb">Sell Account</button>
+  <button id="myProductBtn" class="hidden nnbb">My Product</button>
+  <button id="buyAccountBtn" class="nnbb">Buy Account</button>
+</div>
+
+<!-- MESSAGE BOX -->
+<div id="msgBox"></div>
+
+<!-- PRODUCTS -->
+<div id="productsContainer"></div>
+
+<!-- BUY MODAL -->
+<div id="buyModal">
+  <div class="modal-content">
+    <h3>Complete Your Payment</h3>
+    <p id="paymentInfo"></p>
+<!-- NEW PAYMENT METHOD SELECTION PAGE -->
+<div id="choosePayMethod">
+  <h3>Select Payment Method</h3>
+
+  <button class="nnbb" onclick="selectPayMethod('NGN')">🇳🇬 Pay with NGN (Bank Transfer)</button>
+  <button class="nnbb" onclick="selectPayMethod('USD')">🌍 Pay with USD (Crypto – BTC)</button>
+</div>
+
+<!-- NEW PAYMENT DETAILS PAGE -->
+<div id="paymentDetailsPage" style="display:none;">
+  <h3>Payment Summary</h3>
+  <button onclick="goBackToPaymentMethods()" class="nnbb" 
+style="background:#444;margin-bottom:10px;">⬅️ Change Payment Method</button>
+  <p id="chosenMethodDisplay"></p>
+  <p id="convertedPrice"></p>
+
+  <hr>
+
+  <!-- NGN DETAILS -->
+  <div id="ngnDetails" style="display:none;">
+    <label><b>Bank Transfer (NG – Opay)</b></label>
+    <div class="copy-box">
+      <span id="opayText2">9114301708</span>
+      <button class="copy-btn" onclick="copyText('opayText2')">Copy</button>
+    </div>
+    <div class="copy-box">
+      <span id="bankName2">Opay Bank</span>
+      <button class="copy-btn" onclick="copyText('bankName2')">Copy</button>
+    </div>
+    <div class="copy-box">
+      <span id="acctName2">Ayomide Abdumalik Olatunji</span>
+      <button class="copy-btn" onclick="copyText('acctName2')">Copy</button>
+    </div>
+  </div>
+
+  <!-- USD DETAILS -->
+  <div id="usdDetails" style="display:none;">
+    <label><b>BTC Address (For Foreign Buyers)</b></label>
+    <div class="copy-box">
+      <span id="btcText2">bc1qxhyddpkgvdc68tj9xk5gf5k2vnxmnfy4xrwwr4</span>
+      <button class="copy-btn" onclick="copyText('btcText2')">Copy</button>
+    </div>
+    <div class="copy-box">
+      <span id="btcNetwork2">Bitcoin — BTC Network</span>
+      <button class="copy-btn" onclick="copyText('btcNetwork2')">Copy</button>
+    </div>
+  </div>
+
+  <hr>
+
+  <label>Upload Payment Screenshot:</label>
+  <input type="file" id="paymentScreenshot" accept="image/*">
+
+  <label><b>Select Contact Method</b></label>
+  <select id="contactMethod">
+    <option value="">Select contact method</option>
+    <option value="WhatsApp">WhatsApp</option>
+    <option value="Telegram">Telegram</option>
+    <option value="WeChat">WeChat</option>
+    <option value="Google Chat">Google Chat</option>
+  </select>
+
+  <label><b>Enter your Contact Username/Number</b></label>
+  <input type="text" id="buyerContact" placeholder="Enter your contact here">
+
+<button id="submitPayment" class="nnbb">Submit Payment</button>
+<button id="closeModal" style="background:red;" class="nnbb2">Cancel</button>
+</div>
+  </div>
+</div>
+
+<!-- PAYMENT RESULT POPUP -->
+<div id="paymentPopup">
+  <div class="popup-content" id="paymentPopupContent"></div>
+</div>
+
+<!-- Monetag SDK -->
+<script src="//libtl.com/sdk.js" data-zone="9830606" data-sdk="show_9830606"></script>
+
+<script>
+// TELEGRAM WEBAPP
+// =============================================
+// LIVE USD → NGN EXCHANGE RATE FETCH
+// =============================================
+let liveRate = 0;
+
+async function fetchLiveRate() {
+    try {
+        const res = await fetch("https://open.er-api.com/v6/latest/USD");
+        const data = await res.json();
+        liveRate = data.rates.NGN;
+        console.log("Live NGN/USD Rate:", liveRate);
+    } catch (e) {
+        liveRate = 1500; // fallback
+        console.log("Live rate failed. Using Fallback ₦1500");
+    }
+}
+fetchLiveRate();
+Telegram.WebApp.ready();
+Telegram.WebApp.expand();
+
+// THEME: auto-detect + manual override
+(function(){
+  const toggleBtn = document.getElementById('themeToggle');
+  const userPref = localStorage.getItem('site-theme'); // "dark" or "light" or null
+  function applyTheme(theme){
+    if(theme === 'dark'){
+      document.body.classList.add('dark');
+      toggleBtn.textContent = '☀️';
+      toggleBtn.setAttribute('aria-pressed','true');
+    } else {
+      document.body.classList.remove('dark');
+      toggleBtn.textContent = '🌙';
+      toggleBtn.setAttribute('aria-pressed','false');
+    }
+  }
+  if(userPref === 'dark' || userPref === 'light'){
+    applyTheme(userPref);
+  } else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+    applyTheme('dark');
+  } else { applyTheme('light'); }
+
+  if(!userPref && window.matchMedia){
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener
+      ? window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => applyTheme(e.matches ? 'dark' : 'light'))
+      : window.matchMedia('(prefers-color-scheme: dark)').addListener(e => applyTheme(e.matches ? 'dark' : 'light'));
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    const nowDark = document.body.classList.toggle('dark');
+    applyTheme(nowDark ? 'dark' : 'light');
+    try { localStorage.setItem('site-theme', nowDark ? 'dark' : 'light'); } catch(e){}
+  });
+})();
+
+// USER INFO
+const tgUser = Telegram.WebApp.initDataUnsafe.user || {};
+document.getElementById('fullName').textContent = tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : "");
+document.getElementById('username').textContent = tgUser.username ? "@" + tgUser.username : "";
+document.getElementById('userId').textContent = "Telegram ID: " + (tgUser.id || "");
+if(tgUser.photo_url) document.getElementById('profilePic').src = tgUser.photo_url;
+
+// MESSAGE FUNCTION
+function showMessage(message, type="success") {
+  const box = document.getElementById('msgBox');
+  box.style.color = type==="success" ? "#155724" : type==="pending" ? "#856404" : "#721c24";
+  box.style.background = type==="success" ? "#d4edda" : type==="pending" ? "#fff3cd" : "#f8d7da";
+  box.style.border = type==="success" ? "1px solid #c3e6cb" : type==="pending" ? "1px solid #ffeeba" : "1px solid #f5c6cb";
+  box.textContent = message;
+  box.style.display = "block";
+  box.onclick = () => { box.style.display = "none"; };
+}
+
+// COPY FUNCTION
+function copyText(id){
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(()=> showMessage("Copied: " + text));
+}
+
+// BTC COLLAPSE
+function toggleBTC() {
+  const btc = document.getElementById("btcSection");
+  btc.style.display = btc.style.display === "none" ? "block" : "none";
+}
+
+// TIMER FUNCTION
+let timeLeft = 300; // 5 minutes
+function startTimer() {
+  const timerElement = document.getElementById("timer");
+  const countdown = setInterval(() => {
+    let min = Math.floor(timeLeft / 60);
+    let sec = timeLeft % 60;
+    timerElement.textContent = (min<10?"0":"")+min+":"+(sec<10?"0":"")+sec;
+    if(timeLeft<=0){ clearInterval(countdown); showMessage("Payment time expired. Please try again.","error"); buyModal.style.display="none"; }
+    timeLeft--;
+  },1000);
+}
+
+// SHOW MODAL WITH TIMER
+function openBuyModal() { timeLeft=300; startTimer(); buyModal.style.display="flex"; }
+const buyModal = document.getElementById('buyModal');
+document.getElementById('closeModal').onclick = () => {
+    buyModal.style.display = "none";
+
+    // 🔥 RESET EVERYTHING WHEN USER CANCELS
+    selectedMethod = null;
+    currentProduct = null;
+
+    // Reset payment pages:
+    document.getElementById("choosePayMethod").style.display = "block";
+    document.getElementById("paymentDetailsPage").style.display = "none";
+    document.getElementById("ngnDetails").style.display = "none";
+    document.getElementById("usdDetails").style.display = "none";
+
+    // Clear inputs
+    document.getElementById("paymentScreenshot").value = "";
+    document.getElementById("contactMethod").value = "";
+    document.getElementById("buyerContact").value = "";
+};
+const container = document.getElementById('productsContainer');
+let selectedMethod = null;
+// =============================================
+// UPDATED PAYMENT METHOD HANDLER WITH LIVE RATE
+// =============================================
+async function selectPayMethod(method) {
+    selectedMethod = method;
+// load rate before use
+if (method === "NGN" && liveRate === 0) {
+    await fetchLiveRate();
+}
+
+document.getElementById("choosePayMethod").style.display = "none";
+document.getElementById("paymentDetailsPage").style.display = "block";
+
+document.getElementById("chosenMethodDisplay").innerHTML =
+    `<b>Payment Method:</b> ${method === 'NGN' ? "NGN Bank Transfer" : "USD Crypto (BTC)"}`;
+
+// ===============================================
+// PRICE + $1 FEE SYSTEM
+// ===============================================
+let basePrice = Number(currentProduct.price); // original product price in USD or NGN
+let feeUSD = 1;                               // $1 charge fee (fixed)
+let totalUSD = 0;
+
+// Convert everything to USD first
+if (currentProduct.currency === "USD") {
+    // USD PRODUCT
+    totalUSD = basePrice + feeUSD;
+} else {
+    // NGN PRODUCT → convert to USD first
+    totalUSD = (basePrice / liveRate) + feeUSD;
+}
+
+// ===============================================
+// NGN PAYMENT METHOD
+// ===============================================
+if (method === "NGN") {
+    // Convert final USD amount → NGN
+    let totalNGN = totalUSD * liveRate;
+
+    document.getElementById("convertedPrice").innerHTML =
+        `<b class="am">Total Amount:</b> ₦${Math.round(totalNGN).toLocaleString()} <br>
+         <small style='color:#777'>Product Price: ${basePrice} ${currentProduct.currency}</small><br>
+         <small style='color:#777'>+$1 fee included (converted)</small><br>
+         <small style='color:#777'>Live rate: ₦${Math.round(liveRate)}/$</small>`;
+
+    document.getElementById("ngnDetails").style.display = "block";
+    document.getElementById("usdDetails").style.display = "none";
+}
+
+// ===============================================
+// USD PAYMENT METHOD
+// ===============================================
+else {
+    document.getElementById("convertedPrice").innerHTML =
+        `<b class="am">Total Amount:</b> $${totalUSD.toFixed(2)} <br>
+         <small style='color:#777'>Product Price: ${basePrice} ${currentProduct.currency}</small><br>
+         <small style='color:#777'>+$1 fee included</small><br>
+         <small style='color:#777'>Live rate: ₦${Math.round(liveRate)}/$</small>`;
+
+    document.getElementById("ngnDetails").style.display = "none";
+    document.getElementById("usdDetails").style.display = "block";
+}
+}
+function goBackToPaymentMethods() {
+    selectedMethod = null;
+
+    document.getElementById("paymentScreenshot").value = "";
+    document.getElementById("contactMethod").value = "";
+    document.getElementById("buyerContact").value = "";
+
+    document.getElementById("paymentDetailsPage").style.display = "none";
+    document.getElementById("ngnDetails").style.display = "none";
+    document.getElementById("usdDetails").style.display = "none";
+
+    document.getElementById("choosePayMethod").style.display = "block";
+}
+function renderProducts(){
+  container.innerHTML = "";
+  productsData.forEach((prod)=>{
+    const div = document.createElement('div');
+    div.className="product";
+    div.innerHTML=`
+      <div class="product-details">
+        <p class="pname"><b>${prod.name}</b></p>
+        <br>
+     <img src="${prod.image}">
+        <p>URL: <a href="${prod.url}" target="_blank">${prod.url}</a></p>
+        <p>Price: ${prod.price} ${prod.currency}</p>
+        <p>${prod.description}</p>
+        <button class="buyBtn"> Buy Now </button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  document.querySelectorAll('.buyBtn').forEach((btn,i)=>{
+    btn.onclick = ()=>{
+      currentProduct = productsData[i];
+      showPaymentInfo();
+      openBuyModal();
+    };
+  });
+}
+
+function showPaymentInfo(){
+  document.getElementById("paymentInfo").innerHTML = `
+    <b>${currentProduct.name}</b><br>
+    Price: ${currentProduct.price} ${currentProduct.currency}<br><br>
+    Select payment method below:
+  `;
+}
+
+renderProducts();
+
+// TELEGRAM BOT
+const BOT_TOKEN = "7514817340:AAHUpE5ZPEUZkkM4rq4smoV_nzWfmwWBVGc";
+const ADMIN_ID = "8140042906"; // Admin Telegram ID
+
+function sendTelegramMessage(chatId, message){
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: message, parse_mode:"HTML" })
+    });
+}
+
+function sendTelegramPhoto(chatId, photoFile, caption){
+    const formData = new FormData();
+    formData.append("chat_id", chatId);
+    formData.append("photo", photoFile);
+    formData.append("caption", caption);
+    formData.append("parse_mode", "HTML");
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: formData });
+}
+
+// PAYMENT SUBMISSION
+document.getElementById('submitPayment').onclick = () => {
+  const fileInput = document.getElementById('paymentScreenshot');
+  const file = fileInput.files[0];
+  const method = document.getElementById('contactMethod').value;
+  const contact = document.getElementById('buyerContact').value;
+
+  if(!file) return showPaymentPopup("Upload payment screenshot!","error");
+  if(!method) return showPaymentPopup("Select contact method!","error");
+  if(!contact) return showPaymentPopup("Enter your contact!","error");
+
+  buyModal.style.display = "none";
+
+  const buyerName = tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : "");
+  const buyerUsername = tgUser.username ? "@" + tgUser.username : "";
+  const buyerId = tgUser.id || "";
+// BUYER MANAGEMENT LINK (FOR ADMIN ONLY)
+const buyerManageLink =
+  `https://intelligent17-oss.github.io/market-/ma/buyers.html` +
+  `?product_id=${encodeURIComponent(currentProduct.id)}` +
+  `&buyer_id=${encodeURIComponent(buyerId)}` +
+  `&buyer_username=${encodeURIComponent((buyerUsername || "").replace("@",""))}` +
+  `&buyer_contact=${encodeURIComponent(contact)}`;
+  const sellerId = currentProduct.sellerId;
+  const sellerContact = currentProduct.sellerContact || "Not provided";
+  const productName = currentProduct.name;
+  const productPrice = currentProduct.price + " " + currentProduct.currency;
+  const productId = currentProduct.id;
+  const productURL = currentProduct.url;
+
+  // Show popup success message
+  showPaymentPopup(`
+    Payment Submitted Successfully!<br><br>
+    <b>Product:</b> ${productName}<br>
+    <b>Price:</b> ${productPrice}<br>
+    Admin will review it soon.
+  `, "success");
+
+  // Notify admin with screenshot
+const adminCaption = `
+<b>🧾 NEW PAYMENT SUBMITTED</b>
+
+<b>PRODUCT DETAILS</b>
+• Name: ${productName}
+• Product ID: ${productId}
+• Price: ${productPrice}
+• Product URL: ${productURL}
+
+<b>BUYER DETAILS</b>
+• Name: ${buyerName}
+• Username: ${buyerUsername || "Not set"}
+• Buyer ID: ${buyerId}
+• Buyer Contact: ${contact} (${method})
+
+<b>🔗 BUYER MANAGEMENT LINK</b>
+(Admin should send this to buyer after confirmation)
+${buyerManageLink}
+
+<b>SELLER DETAILS</b>
+• Seller ID: ${sellerId}
+• Seller Contact: ${sellerContact}
+`;
+  sendTelegramPhoto(ADMIN_ID, file, adminCaption);
+
+  const buyerMessage = `
+A request to buy <b>${productName}</b> for <b>${productPrice}</b> has been submitted.
+Admin will review it within a few hours.
+You can request a refund or release the payment once admin verifies and notifies the seller.
+`;
+  sendTelegramMessage(buyerId, buyerMessage);
+
+  const sellerMessage = `
+Someone requested to buy your product: <b>${productName}</b>
+Product ID: ${productId}
+Price: ${productPrice}
+Admin is reviewing the buyer's payment.
+Once verified, you will be credited after the buyer releases the money.
+`;
+  sendTelegramMessage(sellerId, sellerMessage);
+};
+
+// PAYMENT POPUP FUNCTION
+function showPaymentPopup(message, type="success"){
+  const popup = document.getElementById("paymentPopup");
+  const content = document.getElementById("paymentPopupContent");
+  content.innerHTML = message;
+  content.className = "popup-content " + (type==="success" ? "popup-success" : "popup-error");
+  popup.style.display = "flex";
+  popup.onclick = () => { popup.style.display = "none"; };
+}
+
+// NAVIGATION
+document.getElementById('sellBtn').onclick = ()=> { location.href="index.html"; };
+document.getElementById('buyAccountBtn').onclick = ()=> location.reload();
+
+// Monetag Ads
+function showAd() { if(typeof show_9830606==="function"){ show_9830606(); } else { setTimeout(showAd,500); } }
+window.addEventListener("load", () => {
+    setTimeout(() => { showAd(); setInterval(showAd, 40000); }, 10000);
+});
+function getProductLink(productId) {
+  return `https://t.me/intelligentmarketbot/marketplace?startapp=product_${productId}`;
+}
+
+function copyProductLink(productId) {
+  const link = getProductLink(productId);
+  navigator.clipboard.writeText(link).then(() => {
+    showMessage("Product link copied ✅", "success");
+  });
+}
+
+function shareProductLink(productName, productId) {
+  const link = getProductLink(productId);
+  const text = `🔥 ${productName} | Buy here 👇`;
+  const tgShare =
+    `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+  window.open(tgShare, "_blank");
+}
+// MY PRODUCT FEATURE
+const myProductBtn = document.getElementById('myProductBtn');
+const userProducts = productsData.filter(p => p.sellerId === tgUser.id);
+if(userProducts.length > 0) myProductBtn.classList.remove('hidden');
+
+myProductBtn.onclick = () => {
+  container.innerHTML = "";
+  if(userProducts.length === 0){
+    showMessage("You don't have any product yet. Click OK to sell one.","error");
+    location.href = "index.html";
+    return;
+  }
+  userProducts.forEach((prod) => {
+  const div = document.createElement('div');
+  div.className = "product";
+  div.innerHTML = `
+    <img src="${prod.image}">
+    <div class="product-details">
+      <p><b>${prod.name}</b></p>
+      <p>URL: <a href="${prod.url}" target="_blank">${prod.url}</a></p>
+      <p>Price: ${prod.price} ${prod.currency}</p>
+      <p>${prod.description}</p>
+
+      <button onclick="copyProductLink('${prod.id}')" class="buyBtn">
+        📋 Copy Product Link
+      </button>
+
+      <button onclick="shareProductLink('${prod.name}','${prod.id}')" class="buyBtn">
+        📤 Share Product
+      </button>
+
+      <button class="deleteBtn nnbb2">
+        ❌ Request Delete
+      </button>
+    </div>
+  `;
+    container.appendChild(div);
+
+    div.querySelector('.deleteBtn').onclick = () => {
+      if(confirm(`Are you sure you want to request deletion of "${prod.name}"?`)){
+        const sellerId = prod.sellerId;
+        const productName = prod.name;
+        const productId = prod.id;
+        const productPrice = prod.price + " " + prod.currency;
+        const productURL = prod.url;
+        const sellerContact = prod.sellerContact || "Not provided";
+
+        const adminMessage = `
+<b>Delete Request</b>
+Product: ${productName}
+Product ID: ${productId}
+Price: ${productPrice}
+Seller ID: ${sellerId}
+Seller Contact: ${sellerContact}
+Product URL: ${productURL}
+`;
+        sendTelegramMessage(ADMIN_ID, adminMessage);
+
+        const sellerMessage = `
+Your product <b>${productName}</b> has a deletion request sent to admin.
+Admin will review and take action.
+`;
+        sendTelegramMessage(sellerId, sellerMessage);
+
+        showMessage(`Delete request for "${prod.name}" has been sent to admin.`,"success");
+      }
+    };
+  });
+};
+</script>
+<script>
+  // ===============================
+// AUTO SWIPE PAGE TO CLICKED PRODUCT
+// ===============================
+document.addEventListener("click", function(e) {
+  const product = e.target.closest(".product");
+  if (!product) return;
+
+  // Remove previous focus
+  document.querySelectorAll(".product").forEach(p => {
+    p.classList.remove("focused");
+  });
+
+  // Add focus to clicked product
+  product.classList.add("focused");
+
+  // Swipe page smoothly to the product
+  setTimeout(() => {
+    product.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 100);
+});
+</script>
+<script>
+/* ===============================
+   SCROLL-UP REVEAL ENGINE
+================================ */
+const revealElements = () => {
+  const elements = document.querySelectorAll(".scroll-reveal");
+
+  elements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    if (rect.top < windowHeight - 80) {
+      el.classList.add("visible");
+    }
+  });
+};
+
+window.addEventListener("scroll", revealElements);
+window.addEventListener("load", revealElements);
+</script>
+<!-- WHATSAPP ADS BANNER -->
+<div id="adsBanner">
+  <div class="ads-content">
+    <button id="closeAds">×</button>
+    <h3>🔥 Don’t Miss Out!</h3>
+    <p>Join our WhatsApp group for daily updates and premium marketplace deals.</p>
+
+    <a href="https://whatsapp.com/channel/0029VbBtb8l9xVJdvplLij3V" target="_blank" class="ads-btn">
+      👉 Join WhatsApp Group
+    </a>
+  </div>
+</div>
+<script>
+// SHOW ADS AFTER 5 SECONDS
+setTimeout(() => {
+  document.getElementById("adsBanner").style.display = "flex";
+}, 2000);
+
+// CLOSE BUTTON
+document.getElementById("closeAds").onclick = () => {
+  document.getElementById("adsBanner").style.display = "none";
+};
+</script>
+<script>
+/* =====================================
+   TELEGRAM startapp PRODUCT HANDLER
+===================================== */
+(function () {
+  const tg = Telegram.WebApp;
+  const startParam = tg.initDataUnsafe?.start_param;
+
+  if (!startParam) return;
+
+  // Expecting format: product_P1764508470835
+  if (!startParam.startsWith("product_")) return;
+
+  const productId = startParam.replace("product_", "");
+
+  // Find product
+  const index = productsData.findIndex(p => p.id === productId);
+  if (index === -1) {
+    showMessage("Product not found ❌", "error");
+    return;
+  }
+
+  // Scroll + highlight product
+  setTimeout(() => {
+    const productEls = document.querySelectorAll(".product");
+    const target = productEls[index];
+    if (!target) return;
+
+    // Focus animation
+    productEls.forEach(p => p.classList.remove("focused"));
+    target.classList.add("focused");
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+    // Auto-select product for buying
+    currentProduct = productsData[index];
+    showMessage("Product loaded ✅ Scroll down to buy", "success");
+  }, 500);
+})();
+</script>
+</body>
+</html> 
