@@ -3,402 +3,167 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wallet — Intelligent Marketplace</title>
+<title>Buyer Management — Intelligent Marketplace</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://maba-4bre.onrender.com/balance.js"></script>
-
+<script src="pproduct.js"></script>
+<!-- product here -->
 <style>
-body{font-family:Arial,sans-serif;background:#f4f6f8;margin:0;padding:20px;color:#111}
-h2{margin-bottom:10px}
-.card{background:#fff;padding:18px;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.12);margin-bottom:14px}
-#userInfo{display:flex;gap:12px;align-items:center}
-#profilePic{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#eee}
-.bal-big{font-size:34px;font-weight:900}
-.bal-sub{font-weight:bold;color:#555}
-.row{display:flex;gap:10px;margin-top:10px}
-.pill{padding:8px 10px;border-radius:10px;background:#eefaff;border:1px solid #8ed0ff;font-weight:bold}
-button{width:100%;padding:16px;font-size:17px;font-weight:bold;border:none;border-radius:10px;margin-top:10px;cursor:pointer}
-.withdraw{background:#28a745;color:#fff}
-.withdraw.locked{background:#aaa;cursor:not-allowed}
-.sell{background:#1a73e8;color:#fff}
-input,select{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:1px solid #ccc}
-.hidden{display:none}
-
-/* center message */
-.msg{
-  position:fixed;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  padding:18px 22px;
-  border-radius:12px;
-  font-weight:bold;
-  z-index:9999;
-  box-shadow:0 10px 30px rgba(0,0,0,.3);
+body{
+  font-family: Arial, sans-serif;
+  background:#f4f6f8;
+  margin:0;
 }
-.msg.success{background:#d4edda;color:#155724}
-.msg.error{background:#f8d7da;color:#721c24}
+.page{
+  display:none;
+  padding:20px;
+}
+.page.active{
+  display:block;
+}
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+img{
+  width:40%;
+  max-width:130px;
+  display:block;
+  margin:auto;
+  border-radius:8px;
+}
+h2,h3{text-align:center;}
+.btn{
+  width:100%;
+  padding:18px;
+  font-size:18px;
+  font-weight:bold;
+  border:none;
+  border-radius:12px;
+  margin-top:12px;
+  cursor:pointer;
+}
+.green{background:#28a745;color:#fff;}
+.red{background:#dc3545;color:#fff;}
+.blue{background:#007bff;color:#fff;}
+.gray{background:#6c757d;color:#fff;}
+textarea,input{width:100%;padding:12px;margin-top:10px;}
+
+/* ===== PLEASE WAIT LOADER (ADDED ONLY) ===== */
+#loader{
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.9);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 9999;
+}
+#loader p{
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+.spinner{
+  width: 45px;
+  height: 45px;
+  border: 5px solid #ddd;
+  border-top: 5px solid #007bff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin{
+  to{ transform: rotate(360deg); }
+}
 </style>
 </head>
 
 <body>
 
-<h2>Intelligent Marketplace — Wallet</h2>
+<!-- ===== PLEASE WAIT LOADER (ADDED ONLY) ===== -->
+<div id="loader">
+  <div class="spinner"></div>
+  <p>Please wait...</p>
+</div>
 
-<div class="card" id="userInfo">
-  <img id="profilePic">
-  <div>
-    <div id="name"></div>
-    <div id="username"></div>
-    <div id="userid"></div>
+<!-- PAGE 1: PRODUCT -->
+<div class="page active" id="pageProduct">
+  <div class="card" id="productBox"></div>
+  <button class="btn green" onclick="goRelease()">Release Funds</button>
+  <button class="btn red" onclick="goRefund()">Refund</button>
+  <button class="btn blue" onclick="goSeller()">Message Seller</button>
+</div>
+
+<!-- PAGE 2: RELEASE CONFIRM -->
+<div class="page" id="pageReleaseConfirm">
+  <div class="card">
+    <h3>Confirm Release</h3>
+    <p id="releaseConfirmText"></p>
+    <button class="btn green" onclick="submitRelease()">Yes I am very sure</button>
+    <button class="btn gray" onclick="back()">No</button>
   </div>
 </div>
 
-<div class="card">
-  <b>Available Balance</b>
-  <div class="bal-big" id="ngnBal">₦0.00</div>
-  <div class="bal-sub" id="usdBal">≈ $0.00</div>
-  <div class="row">
-    <div class="pill" id="baseBal">Base: ₦0</div>
+<!-- PAGE 3: RELEASE SUCCESS -->
+<div class="page" id="pageReleaseSuccess">
+  <div class="card">
+    <h3>Funds release request is successful 👊👍</h3>
+    <button class="btn gray" onclick="back()">Back to product</button>
   </div>
 </div>
-<div class="card">
-  <button id="withdrawBtn" class="withdraw" onclick="openWithdraw()">Withdraw</button>
-  <button class="sell" onclick="location.href='index.html'">Sell Products</button>
+
+<!-- PAGE 4: REFUND CONFIRM -->
+<div class="page" id="pageRefundConfirm">
+  <div class="card">
+    <h3>Confirm Refund</h3>
+    <p id="refundConfirmText"></p>
+    <button class="btn red" onclick="showRefundForm()">Yes I want to refund</button>
+    <button class="btn gray" onclick="back()">No</button>
+  </div>
 </div>
 
-<!-- Withdraw box -->
-<div class="card hidden" id="withdrawBox">
-  <select id="method" onchange="switchMethod()">
-    <option value="">Select withdrawal method</option>
-    <option value="bank">Bank Transfer</option>
-    <option value="bnb">BNB (BEP20)</option>
-  </select>
-
-  <div id="bankBox" class="hidden">
-<input id="bankAmount" placeholder="Amount (NGN)" type="number">
-
-<input id="accountNumber" placeholder="Account Number" type="number">
-
-<select id="bankSelect" onchange="checkOtherBank()">
-  <option value="">Select Bank</option>
-  <option value="Access Bank">Access Bank</option>
-  <option value="Kuda">Kuda</option>
-  <option value="First Bank">First Bank</option>
-  <option value="Opay (paycom)">Opay</option>
-  <option value="UBA">UBA</option>
-  <option value="Monie point">Monie point</option>
-  <option value="Union Bank">Union Bank</option>
-  <option value="FCMB">FCMB</option>
-  <option value="Palmpay">Palmpay</option>
-  <option value="Wema Bank">Wema Bank</option>
-  <option value="Other">Other Bank</option>
-</select>
-
-<input id="otherBank" class="hidden" placeholder="Enter Bank Name">
-
-<input id="accountName" placeholder="Account Name">
-
-<button class="withdraw" onclick="submitBank()">Submit</button>
+<!-- PAGE 5: REFUND FORM -->
+<div class="page" id="pageRefundForm">
+  <div class="card">
+    <h3>Refund Request</h3>
+    <textarea id="refundReason" placeholder="Refund reason"></textarea>
+    <input type="file" id="refundProof" accept="image/*">
+    <button class="btn red" onclick="submitRefund()">Submit Refund</button>
   </div>
-
-  <div id="bnbBox" class="hidden">
-<input id="bnbAddress" placeholder="BNB (BEP20) Address">
-    <input id="bnbAmount" placeholder="Amount (USD)">
-    <button class="withdraw" onclick="submitBNB()">Submit</button>
-  </div>
-
-  <button class="sell" onclick="closeWithdraw()">Close</button>
 </div>
 
-<div id="msgBox" class="msg hidden"></div>
-<script>
-/* =========================
-   TELEGRAM INIT
-========================= */
-Telegram.WebApp.ready();
-Telegram.WebApp.expand();
+<!-- PAGE 6: REFUND SUCCESS -->
+<div class="page" id="pageRefundSuccess">
+  <div class="card">
+    <h3>Refund request submitted successfully ✅</h3>
+    <button class="btn gray" onclick="back()">Back to product</button>
+  </div>
+</div>
 
-const user = Telegram.WebApp.initDataUnsafe.user || {};
-const BOT_TOKEN = "7514817340:AAHUpE5ZPEUZkkM4rq4smoV_nzWfmwWBVGc";   // ⚠️ put in backend later (don’t keep token in frontend)
-const ADMIN_ID  = "6940101627";
+<!-- PAGE 7: SELLER -->
+<div class="page" id="pageSeller">
+  <div class="card">
+    <h3>Seller Details</h3>
+    <p id="sellerInfo"></p>
+    <button class="btn gray" onclick="back()">Back</button>
+  </div>
+</div>
 
-/* =========================
-   STORAGE
-========================= */
-const WALLET_KEY = "IM_WALLET_FOREVER";
+<!-- PAGE 8: ERROR -->
+<div class="page" id="pageError">
+  <div class="card">
+    <h3>❌ Something went wrong</h3>
+    <p id="errorText"></p>
+    <button class="btn gray" onclick="back()">Back</button>
+  </div>
+</div>
 
-function saveWallet(data){
-  localStorage.setItem(WALLET_KEY, JSON.stringify(data));
-}
-function loadWallet(){
-  try { return JSON.parse(localStorage.getItem(WALLET_KEY)); }
-  catch(e){ return null; }
-}
+<!-- YOUR JS MOVED TO EXTERNAL FILE (NO CODE REMOVED, JUST RELOCATED) -->
+<script src="pmain.js"></script>
 
-/* =========================
-   EXCHANGE RATE
-========================= */
-let rate = 1500;
-fetch("https://open.er-api.com/v6/latest/USD")
-  .then(r => r.json())
-  .then(d => rate = d?.rates?.NGN || 1500)
-  .catch(()=> rate = 1500);
-
-/* =========================
-   USER UI
-========================= */
-name.textContent = (user.first_name||"") + (user.last_name ? " "+user.last_name : "");
-username.textContent = user.username ? "@"+user.username : "No username";
-userid.textContent = "Telegram ID: "+(user.id||"");
-profilePic.src = user.photo_url || "https://via.placeholder.com/64";
-const tgUsername = user.username ? "@" + user.username : "No username";
-/* =========================
-   STATE
-========================= */
-let wallet = loadWallet();
-let balanceNGN = 0;
-let hasWallet = false;
-
-/* =========================
-   UI FUNCTIONS
-========================= */
-function updateUI(){
-  ngnBal.textContent = "₦" + (balanceNGN||0).toLocaleString();
-  usdBal.textContent = "≈ $" + ((balanceNGN||0) / rate).toFixed(2);
-  baseBal.textContent = "Base: ₦" + (balanceNGN||0).toLocaleString();
-}
-function showMsg(text,type){
-  msgBox.textContent = text;
-  msgBox.className = "msg " + type;
-  msgBox.classList.remove("hidden");
-  setTimeout(()=>msgBox.classList.add("hidden"),3000);
-}
-
-/* =========================
-   BALANCE.JS LOADING CHECK
-========================= */
-function getAdminBalance(){
-  // balance.js must define window.walletBalances = {...}
-  if(!window.walletBalances) return null;
-
-  const val = window.walletBalances[user.id];
-  return (typeof val === "number") ? val : null;
-}
-
-/* =========================
-   INITIAL WALLET SETUP
-========================= */
-function initWalletIfPossible(){
-  const adminBal = getAdminBalance();
-  wallet = loadWallet();
-
-  // First time user: only create wallet if admin has added them in balance.js
-  if(!wallet && adminBal !== null){
-    wallet = {
-      userId: user.id,
-      adminBalance: adminBal,
-      balanceNGN: adminBal,
-      history: []
-    };
-    saveWallet(wallet);
-  }
-
-  // Existing wallet
-  if(wallet && wallet.userId === user.id){
-    hasWallet = true;
-    balanceNGN = wallet.balanceNGN;
-  } else {
-    hasWallet = false;
-    balanceNGN = 0;
-  }
-
-  if(!hasWallet){
-    withdrawBtn.classList.add("locked");
-  } else {
-    withdrawBtn.classList.remove("locked");
-  }
-
-  updateUI();
-
-}
-
-/* =========================
-   AUTO APPROVAL LOGIC (THE MAIN FIX)
-========================= */
-function syncAndAutoApprove(){
-  wallet = loadWallet();
-  if(!wallet || wallet.userId !== user.id) return;
-
-  const adminBal = getAdminBalance();
-  if(adminBal === null) return; // user not in balance.js yet OR balance.js not loaded
-
-  // If adminBalance changed => mark all pending as success
-  if(adminBal !== wallet.adminBalance){
-    (wallet.history || []).forEach(h=>{
-      if(h.status === "pending"){
-        h.status = "success";
-        h.approvedAt = new Date().toISOString();
-      }
-    });
-
-    wallet.adminBalance = adminBal;
-    wallet.balanceNGN = adminBal;
-    balanceNGN = adminBal;
-
-    saveWallet(wallet);
-    updateUI();
-
-  }
-}
-
-/* =========================
-   KEEP CHECKING (SO IT WORKS WITHOUT REFRESH)
-========================= */
-initWalletIfPossible();
-
-// check every 3 seconds: balance.js loaded? admin updated? approve?
-setInterval(() => {
-  initWalletIfPossible();
-  syncAndAutoApprove();
-}, 3000);
-
-/* =========================
-   WITHDRAW UI
-========================= */
-function openWithdraw(){
-  if(!hasWallet) return showMsg("❌ You cant withdraw yet Minimum balace to withdraw is NGN5000","error");
-  if(balanceNGN < 5000) return showMsg("❌ Minimum withdrawal is ₦5,000","error");
-  withdrawBox.classList.remove("hidden");
-}
-function closeWithdraw(){ withdrawBox.classList.add("hidden"); }
-function switchMethod(){
-  bankBox.classList.toggle("hidden", method.value !== "bank");
-  bnbBox.classList.toggle("hidden", method.value !== "bnb");
-}
-
-/* =========================
-   TELEGRAM SEND
-========================= */
-function sendTG(chatId,text){
-  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ chat_id:chatId, text })
-  });
-}
-
-/* =========================
-   BANK WITHDRAW
-========================= */
-function submitBank(){
-  if(!wallet || wallet.userId !== user.id) return showMsg("❌ Wallet not ready","error");
-
-  const amt = Number(bankAmount.value);
-  if(!amt || amt < 5000) return showMsg("❌ Minimum withdrawal is ₦5,000","error");
-  if(amt > balanceNGN) return showMsg("❌ Insufficient balance","error");
-
-  const bankName = bankSelect.value === "Other" ? otherBank.value : bankSelect.value;
-  if(!bankName) return showMsg("❌ Please select a bank","error");
-  if(bankSelect.value === "Other" && !otherBank.value) return showMsg("❌ Enter bank name","error");
-  if(!accountNumber.value || !accountName.value) return showMsg("❌ Fill all bank details","error");
-
-  balanceNGN -= amt;
-
-  wallet.history = wallet.history || [];
-  wallet.history.push({
-    type:"BANK",
-    amount:amt,
-    bank:bankName,
-    account: accountNumber.value,
-    name: accountName.value,
-    status:"pending",
-    requestedAt:new Date().toISOString()
-  });
-  wallet.balanceNGN = balanceNGN;
-
-  saveWallet(wallet);
-  updateUI();
-
-
-  sendTG(ADMIN_ID, `💸 Withdrawal Request (BANK)
-
-User Name: ${user.first_name || ""} ${user.last_name || ""}
-Username: ${tgUsername}
-Telegram ID: ${user.id}
-
-Method: BANK
-Amount: ₦${amt}
-Bank: ${bankName}
-Account Number: ${accountNumber.value}
-Account Name: ${accountName.value}
-
-----------------------
-Remaining Wallet Balance:
-₦${wallet.balanceNGN.toLocaleString()}
-≈ $${(wallet.balanceNGN / rate).toFixed(2)}
-`);
-  sendTG(user.id, `Your bank withdrawal request is pending.\nAmount: ₦${amt}\nProcessing time: up to 24 hours`);
-
-  showMsg("✅ Withdrawal submitted","success");
-  closeWithdraw();
-}
-
-/* =========================
-   BNB WITHDRAW
-========================= */
-function submitBNB(){
-  if(!wallet || wallet.userId !== user.id) return showMsg("❌ Wallet not ready","error");
-
-  const usd = Number(bnbAmount.value);
-  if(!usd || usd < 20) return showMsg("❌ Minimum withdrawal is $20","error");
-if(!bnbAddress.value) 
-  return showMsg("❌ Enter BNB (BEP20) address","error");
-  const ngn = Math.round(usd * rate);
-  if(ngn > balanceNGN) return showMsg("❌ Insufficient balance","error");
-
-  balanceNGN -= ngn;
-
-  wallet.history.push({
-  type:"BNB",
-  usd,
-  ngn,
-  address: bnbAddress.value,
-  status:"pending",
-  requestedAt:new Date().toISOString()
-});
-  wallet.balanceNGN = balanceNGN;
-
-  saveWallet(wallet);
-  updateUI();
-
-sendTG(ADMIN_ID, `💸 Withdrawal Request (BNB)
-
-User Name: ${user.first_name || ""} ${user.last_name || ""}
-Username: ${tgUsername}
-Telegram ID: ${user.id}
-
-Method: BNB
-Amount: $${usd} (~₦${ngn})
-BNB Address: ${bnbAddress.value}
-
-----------------------
-Remaining Wallet Balance:
-₦${wallet.balanceNGN.toLocaleString()}
-≈ $${(wallet.balanceNGN / rate).toFixed(2)}
-`);
-  sendTG(user.id, `Your BNB withdrawal request is pending.\nAmount: $${usd}\nProcessing time: up to 24 hours`);
-
-  showMsg("✅ Withdrawal submitted","success");
-  closeWithdraw();
-}
-</script>
-<script>
-  function checkOtherBank(){
-  otherBank.classList.toggle(
-    "hidden",
-    bankSelect.value !== "Other"
-  );
-}
-</script>
 </body>
 </html>
