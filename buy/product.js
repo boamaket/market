@@ -37,7 +37,7 @@ const productsData = [
   id: "P1766124489545",
   name: "5yrs old Switch profile Facebook , has page and can create more page",
   description: "5yrs old switch profile Facebook with already created legit page and can create more .. affordable and has 100 💯 percent bombing response",
-  price: "3500",
+  price: "4500",
   currency: "NGN",
   image: "https://i.ibb.co/nMvXy9Wx/IMG-3035.png",
   sellerId: 7227113353,
