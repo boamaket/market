@@ -526,11 +526,13 @@ Product ID: ${productId}
   }
 
   // 2️⃣ Send confirmation to SELLER
-  if (tgUser && tgUser.id) {
-    await sendToBackend(String(tgUser.id), {
-      message: sellerMessage
-    });
-  }
+  if (tgUser && tgUser.id && tgUser.id !== 0) {
+  await sendToBackend(String(tgUser.id), {
+    seller_message: sellerMessage
+  });
+} else {
+  console.warn("Seller Telegram ID invalid or WebApp opened outside bot");
+}
 
   handleSubmitSuccess(productId);
 } catch (err) {
