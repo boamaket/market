@@ -541,12 +541,7 @@ body.dark #productDetailsModal .modal-content {
 /* ============================
    PRODUCT DETAILS IMAGE SIZE FIX
 ============================ */
-#pdImage {
-  width: 100%;
-  max-height: 220px;   /* ⬅️ THIS CONTROLS THE SIZE */
-  object-fit: cover;   /* ⬅️ keeps image clean */
-  border-radius: 10px;
-  display: block;
+
 }
 /* ============================
    MY PRODUCT — STABLE MODE
@@ -589,6 +584,52 @@ body.dark #productDetailsModal .modal-content {
   max-height: 220px;
   object-fit: contain;
   margin-bottom: 10px;
+}
+/* ============================
+   SCROLLABLE PRODUCT IMAGE
+============================ */
+.pd-image-wrapper {
+  width: 100%;
+  max-height: 300px;        /* control visible height */
+  overflow-y: auto;         /* 🔥 enables vertical scroll */
+  -webkit-overflow-scrolling: touch; /* smooth mobile scroll */
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+#pdImage {
+  width: 100%;
+  height: auto;             /* 🔥 allow full height */
+  display: block;
+}
+/* ============================
+   FIX: SCROLLABLE PRODUCT IMAGE
+============================ */
+
+/* Image scroll container */
+.pd-image-wrapper {
+  width: 100%;
+  max-height: 300px;        /* visible area */
+  overflow-y: auto;         /* 🔥 IMAGE SCROLL */
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  background: #000;         /* avoids white flash */
+}
+
+/* Image itself — NO LIMITS */
+#pdImage {
+  width: 100%;
+  height: auto;             /* 🔥 allow tall image */
+  max-height: none !important;
+  object-fit: contain !important;
+  display: block;
+}
+
+/* Prevent modal from stealing scroll */
+#productDetailsModal .modal-content {
+  overflow-y: visible !important;
 }
 </style>
 </head>
@@ -713,7 +754,9 @@ body.dark #productDetailsModal .modal-content {
 <div id="productDetailsModal" style="display:none;">
   <div class="modal-content">
 
-    <img id="pdImage" style="width:100%;border-radius:10px;margin-bottom:10px">
+<div class="pd-image-wrapper">
+  <img id="pdImage">
+</div>
 
     <h3 id="pdName"></h3>
     <p id="pdPrice"></p>
@@ -1394,7 +1437,7 @@ window.addEventListener("load", revealElements);
     <h3>🔥 Don’t Miss Out!</h3>
     <p>Join our WhatsApp group for daily updates and premium marketplace deals.</p>
 
-    <a href="https://whatsapp.com/channel/0029VbBtb8l9xVJdvplLij3V" target="_blank" class="ads-btn">
+    <a href="https://chat.whatsapp.com/EpLYvx0nAbtIIr29h8K3lF" target="_blank" class="ads-btn">
       👉 Join WhatsApp Group
     </a>
   </div>
