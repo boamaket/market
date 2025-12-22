@@ -1,6 +1,17 @@
 // PRODUCTS DATA
 const productsData = [
 {
+  id: "P1766384669346",
+  name: "TikTok account",
+  description: "Strong TikTok account",
+  price: "15000",
+  currency: "NGN",
+  image: "https://i.ibb.co/ns8MR0gP/Screenshot-20251222-072229.png",
+  sellerId: 6940101627,
+  sellerContact: "Whatsapp +2349114301708",
+  url: "https://i.ibb.co/ns8MR0gP/Screenshot-20251222-072229.png"
+},
+{
   id: "P1766129405718",
   name: "6years Facebook with switch profile",
   description: "Asa Facebook",
