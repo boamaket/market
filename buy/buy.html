@@ -481,6 +481,50 @@ body.dark #closeAds {
 .am {
   font-size:25px;
 }
+/* ============================
+   LOADING OVERLAY
+============================ */
+#loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.65);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999999;
+}
+
+.loading-box {
+  background: #fff;
+  padding: 22px 28px;
+  border-radius: 14px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 17px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+body.dark .loading-box {
+  background: #111416;
+  color: #fff;
+}
+
+.spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #1a73e8;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 </style>
 </head>
 
@@ -674,6 +718,13 @@ style="background:#444;margin-bottom:10px;">⬅️ Change Payment Method</button
 <button id="submitPayment" class="nnbb">Submit Payment</button>
 <button id="closeModal" style="background:red;" class="nnbb2">Cancel</button>
 </div>
+  </div>
+</div>
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p>Please wait… submitting payment</p>
   </div>
 </div>
 
@@ -922,49 +973,107 @@ function showPaymentInfo(){
 renderProducts();
 
 // TELEGRAM BOT
-const BOT_TOKEN = "7514817340:AAGp_ILOdTeH77TXwLcQmv5NxSIWAzW80Ag";
-const ADMIN_ID = "7979664801"; // Admin Telegram ID
+// TELEGRAM BOT (SECURE — handled by Render server)
+const ADMIN_ID = "7979664801";
+const API_BASE = "https://marketback.onrender.com";
 
-function sendTelegramMessage(chatId, message){
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: chatId, text: message, parse_mode:"HTML" })
+async function sendTelegramMessage(chatId, message){
+  try {
+    const res = await fetch(`${API_BASE}/tg/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: "HTML"
+      })
     });
+    const data = await res.json();
+    return data.ok === true;
+  } catch (e) {
+    return false;
+  }
 }
 
-function sendTelegramPhoto(chatId, photoFile, caption){
+async function sendTelegramPhoto(chatId, photoFile, caption){
+  try {
     const formData = new FormData();
     formData.append("chat_id", chatId);
     formData.append("photo", photoFile);
     formData.append("caption", caption);
     formData.append("parse_mode", "HTML");
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: formData });
+
+    const res = await fetch(`${API_BASE}/tg/sendPhoto`, {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    return data.ok === true;
+  } catch (e) {
+    return false;
+  }
+}
+// PAYMENT SUBMISSION
+// PAYMENT SUBMISSION
+// ================================
+// DECLARED PAYMENT RESULT MESSAGES
+// ================================
+const PAYMENT_MESSAGES = {
+  PARTIAL_NOTIFICATION: (notes) => `
+⚠️ <b>Payment received successfully</b><br><br>
+Admin has received your payment.<br><br>
+<b>Important notes:</b><br>
+${notes.join("<br>")}
+  `,
+
+  ALL_SUCCESS: (productName, productPrice) => `
+✅ <b>Payment submitted successfully</b><br><br>
+<b>Product:</b> ${productName}<br>
+<b>Price:</b> ${productPrice}<br><br>
+Admin and seller have been notified.
+  `
+};
+function showLoading() {
+  document.getElementById("loadingOverlay").style.display = "flex";
 }
 
-// PAYMENT SUBMISSION
-document.getElementById('submitPayment').onclick = () => {
-  const fileInput = document.getElementById('paymentScreenshot');
-  const file = fileInput.files[0];
+function hideLoading() {
+  document.getElementById("loadingOverlay").style.display = "none";
+}
+// PAYMENT POPUP FUNCTION
+function showPaymentPopup(message, type="success"){
+  hideLoading(); // ✅ STOP LOADING HERE
+
+  const popup = document.getElementById("paymentPopup");
+  const content = document.getElementById("paymentPopupContent");
+  content.innerHTML = message;
+  content.className =
+    "popup-content " + (type==="success" ? "popup-success" : "popup-error");
+  popup.style.display = "flex";
+  popup.onclick = () => { popup.style.display = "none"; };
+}
+document.getElementById('submitPayment').onclick = async () => {
+if (!currentProduct) {
+  return showPaymentPopup(
+    "❌ No product selected.<br>Please reopen the product and try again.",
+    "error"
+  );
+}
+  const file = document.getElementById('paymentScreenshot').files[0];
   const method = document.getElementById('contactMethod').value;
   const contact = document.getElementById('buyerContact').value;
 
-  if(!file) return showPaymentPopup("Upload payment screenshot!","error");
-  if(!method) return showPaymentPopup("Select contact method!","error");
-  if(!contact) return showPaymentPopup("Enter your contact!","error");
+  if(!file) return showPaymentPopup("Upload payment screenshot!", "error");
+  if(!method) return showPaymentPopup("Select contact method!", "error");
+  if(!contact) return showPaymentPopup("Enter your contact!", "error");
 
   buyModal.style.display = "none";
+showLoading();
 
   const buyerName = tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : "");
   const buyerUsername = tgUser.username ? "@" + tgUser.username : "";
   const buyerId = tgUser.id || "";
-// BUYER MANAGEMENT LINK (FOR ADMIN ONLY)
-const buyerManageLink =
-  `https://intelligent17-oss.github.io/market-/ma/buyers.html` +
-  `?product_id=${encodeURIComponent(currentProduct.id)}` +
-  `&buyer_id=${encodeURIComponent(buyerId)}` +
-  `&buyer_username=${encodeURIComponent((buyerUsername || "").replace("@",""))}` +
-  `&buyer_contact=${encodeURIComponent(contact)}`;
+
   const sellerId = currentProduct.sellerId;
   const sellerContact = currentProduct.sellerContact || "Not provided";
   const productName = currentProduct.name;
@@ -972,16 +1081,15 @@ const buyerManageLink =
   const productId = currentProduct.id;
   const productURL = currentProduct.url;
 
-  // Show popup success message
-  showPaymentPopup(`
-    Payment Submitted Successfully!<br><br>
-    <b>Product:</b> ${productName}<br>
-    <b>Price:</b> ${productPrice}<br>
-    Admin will review it soon.
-  `, "success");
+  const buyerManageLink =
+    `https://intelligent17-oss.github.io/market-/ma/buyers.html` +
+    `?product_id=${encodeURIComponent(productId)}` +
+    `&buyer_id=${encodeURIComponent(buyerId)}` +
+    `&buyer_username=${encodeURIComponent((buyerUsername || "").replace("@",""))}` +
+    `&buyer_contact=${encodeURIComponent(contact)}`;
 
-  // Notify admin with screenshot
-const adminCaption = `
+  // ✅ DEFINE adminCaption FIRST
+  const adminCaption = `
 <b>🧾 NEW PAYMENT SUBMITTED</b>
 
 <b>PRODUCT DETAILS</b>
@@ -997,41 +1105,64 @@ const adminCaption = `
 • Buyer Contact: ${contact} (${method})
 
 <b>🔗 BUYER MANAGEMENT LINK</b>
-(Admin should send this to buyer after confirmation)
 ${buyerManageLink}
 
 <b>SELLER DETAILS</b>
 • Seller ID: ${sellerId}
 • Seller Contact: ${sellerContact}
 `;
-  sendTelegramPhoto(ADMIN_ID, file, adminCaption);
 
-  const buyerMessage = `
-A request to buy <b>${productName}</b> for <b>${productPrice}</b> has been submitted.
-Admin will review it within a few hours.
-You can request a refund or release the payment once admin verifies and notifies the seller.
-`;
-  sendTelegramMessage(buyerId, buyerMessage);
+  // ✅ NOW SEND
+// 1️⃣ ADMIN (CRITICAL — MUST PASS)
+// ================================
+// 1️⃣ ADMIN — CRITICAL
+// ================================
+const adminOk = await sendTelegramPhoto(ADMIN_ID, file, adminCaption);
+// ================================
+// 2️⃣ BUYER — OPTIONAL
+// ================================
+const buyerOk = await sendTelegramMessage(buyerId, `
+Your request to buy <b>${productName}</b> (${productPrice}) was submitted.
+Admin will review it shortly.
+`);
 
-  const sellerMessage = `
-Someone requested to buy your product: <b>${productName}</b>
-Product ID: ${productId}
+// ================================
+// 3️⃣ SELLER — OPTIONAL
+// ================================
+const sellerOk = await sendTelegramMessage(sellerId, `
+Someone requested to buy your product:
+<b>${productName}</b>
 Price: ${productPrice}
-Admin is reviewing the buyer's payment.
-Once verified, you will be credited after the buyer releases the money.
-`;
-  sendTelegramMessage(sellerId, sellerMessage);
-};
+Admin is reviewing the payment.
+`);
 
-// PAYMENT POPUP FUNCTION
-function showPaymentPopup(message, type="success"){
-  const popup = document.getElementById("paymentPopup");
-  const content = document.getElementById("paymentPopupContent");
-  content.innerHTML = message;
-  content.className = "popup-content " + (type==="success" ? "popup-success" : "popup-error");
-  popup.style.display = "flex";
-  popup.onclick = () => { popup.style.display = "none"; };
+// ================================
+// FINAL RESULT MESSAGE
+// ================================
+let notes = [];
+
+if (!buyerOk) {
+  notes.push("• We could not notify you because you have not started or unblocked the bot.");
 }
+
+if (!sellerOk) {
+  notes.push("• Seller could not be reached. Admin will contact the seller manually.");
+}
+
+// ⚠️ PARTIAL SUCCESS (ADMIN ALREADY RECEIVED PAYMENT)
+if (notes.length > 0) {
+  return showPaymentPopup(
+    PAYMENT_MESSAGES.PARTIAL_NOTIFICATION(notes),
+    "success"   // ✅ IMPORTANT CHANGE
+  );
+}
+// ✅ FULL SUCCESS
+showPaymentPopup(
+  PAYMENT_MESSAGES.ALL_SUCCESS(productName, productPrice),
+  "success"
+);
+};
+  // Notify admin with screenshot
 
 // NAVIGATION
 document.getElementById('sellBtn').onclick = ()=> { location.href="index.html"; };
