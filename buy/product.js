@@ -1,6 +1,50 @@
 // PRODUCTS DATA
 const productsData = [
 {
+  id: "P1766393974610",
+  name: "Sharp investment update",
+  description: "*INVESTMENT UPDATE*💰
+
+*THE UPDATE CONSISTS OF* 👇*Tutorial guide on how to set up your working account*
+
+*Format for the BTC INVESTMENT*
+
+*PLENTY OF PROVES TO SHOW YOUR CL THAT THE INVESTMENT IS LEGIT AND PROFITABLE*
+
+*BILLING 1, 2 AND 3*",
+  price: "30000",
+  currency: "NGN",
+  image: "https://i.ibb.co/bMGWtG1D/IMG-20251222-WA0020.jpg",
+  sellerId: 6070010078,
+  sellerContact: "+2348111625143",
+  url: "https://ibb.co/RkJv8J2d"
+},
+{
+  id: "P1766393772125",
+  name: "Latest sharp pet update fast cash out",
+  description: "Sharp pet update
+*Brooo This Updates day Hot*
+
+Pet Update Comes With All Details Explanations on how to work the update, On how to get clients, pages to work, place to get working pictures, place to get working tools for the pet update, website to make your account get more engagements for more trust, audios & step by step guild on how to work this update, With FORMAT & ALL. Pet Update Is Active.",
+  price: "30000",
+  currency: "NGN",
+  image: "https://i.ibb.co/C5YyMshD/IMG-20251221-WA0575.jpg",
+  sellerId: 6070010078,
+  sellerContact: "+2348111625143",
+  url: "https://ibb.co/tMv6xP8F"
+},
+{
+  id: "P1766393642488",
+  name: "Tiktok account with 1k+ follower's",
+  description: "5 years old Tiktok account with 1k+ followers",
+  price: "10000",
+  currency: "NGN",
+  image: "https://www.tiktok.com/@tinofx12?_r=1&_t=ZS-92Qi5YGIbKu",
+  sellerId: 6789580197,
+  sellerContact: "08139337058",
+  url: "https://www.tiktok.com/@tinofx12?_r=1&_t=ZS-92Qi5YGIbKu"
+},
+{
   id: "P1766384669346",
   name: "TikTok account",
   description: "Strong TikTok account",
