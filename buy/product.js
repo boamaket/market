@@ -1,6 +1,17 @@
 // PRODUCTS DATA
 const productsData = [
 {
+  id: "P1766409670102",
+  name: "5yrs old Facebook switch profile, has pages and can create more",
+  description: "The acct is flexible and Fit for any kind of job .. Has Already created Celeb page and can create more … With 100 💯 percent bombing responses , secured ✅ bombing response ✅, pages ✅",
+  price: "6000",
+  currency: "NGN",
+  image: "https://i.ibb.co/yFq2N1Hr/IMG-3051.png",
+  sellerId: 7227113353,
+  sellerContact: "+2347075433008",
+  url: "https://www.facebook.com/share/16hPawqb1M/?mibextid=wwXIfr"
+},
+{
   id: "P1766393772125",
   name: "Latest sharp pet update fast cash out",
   description: "Sharp pet update *Brooo This Updates day Hot* Pet Update Comes With All Details Explanations on how to work the update, On how to get clients, pages to work, place to get working pictures, place to get working tools for the pet update, website to make your account get more engagements for more trust, audios & step by step guild on how to work this update, With FORMAT & ALL. Pet Update Is Active.",
