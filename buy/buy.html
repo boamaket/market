@@ -569,6 +569,27 @@ body.dark #productDetailsModal .modal-content {
   max-height: 180px;
   max-width: 100%;
 }
+/* ============================
+   MY PRODUCT — FULL WIDTH FIX
+============================ */
+#productsContainer.my-products {
+  display: block !important;   /* ⬅️ KILL GRID */
+}
+
+#productsContainer.my-products .product {
+  width: 100% !important;
+  display: block;
+  text-align: left;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+#productsContainer.my-products .product img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
 </style>
 </head>
 
