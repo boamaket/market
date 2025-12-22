@@ -548,6 +548,25 @@ body.dark #productDetailsModal .modal-content {
   border-radius: 10px;
   display: block;
 }
+/* ============================
+   MY PRODUCT — STABLE MODE
+============================ */
+.my-products .product,
+.my-products .product:active,
+.my-products .product:focus-within,
+.my-products .product.focused {
+  transform: none !important;
+  animation: none !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
+  border: none !important;
+}
+
+.my-products .product img {
+  transform: none !important;
+  object-fit: contain !important;
+  height: auto !important;
+  max-height: 180px;
+}
 </style>
 </head>
 
@@ -923,6 +942,7 @@ document.getElementById('closeModal').onclick = () => {
 };
 const container = document.getElementById('productsContainer');
 let selectedMethod = null;
+let isMyProductView = false; // ✅ FLAG FOR MY PRODUCT MODE
 // =============================================
 // UPDATED PAYMENT METHOD HANDLER WITH LIVE RATE
 // =============================================
@@ -1231,6 +1251,8 @@ const userProducts = productsData.filter(p => p.sellerId === tgUser.id);
 if(userProducts.length > 0) myProductBtn.classList.remove('hidden');
 
 myProductBtn.onclick = () => {
+  isMyProductView = true;               // ✅ TURN ON MY PRODUCT MODE
+  container.classList.add("my-products");
   container.innerHTML = "";
   if(userProducts.length === 0){
     showMessage("You don't have any product yet. Click OK to sell one.","error");
@@ -1299,19 +1321,21 @@ Admin will review and take action.
   // ===============================
 // AUTO SWIPE PAGE TO CLICKED PRODUCT
 // ===============================
+// AUTO SWIPE PAGE TO CLICKED PRODUCT
 document.addEventListener("click", function(e) {
+
+  // 🚫 DISABLE FOR MY PRODUCT VIEW
+  if (isMyProductView) return;
+
   const product = e.target.closest(".product");
   if (!product) return;
 
-  // Remove previous focus
   document.querySelectorAll(".product").forEach(p => {
     p.classList.remove("focused");
   });
 
-  // Add focus to clicked product
   product.classList.add("focused");
 
-  // Swipe page smoothly to the product
   setTimeout(() => {
     product.scrollIntoView({
       behavior: "smooth",
