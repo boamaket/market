@@ -3,8 +3,7 @@ const productsData = [
 {
   id: "P1766393772125",
   name: "Latest sharp pet update fast cash out",
-  description: "Sharp pet update
-*Brooo This Updates day Hot* Pet Update Comes With All Details Explanations on how to work the update, On how to get clients, pages to work, place to get working pictures, place to get working tools for the pet update, website to make your account get more engagements for more trust, audios & step by step guild on how to work this update, With FORMAT & ALL. Pet Update Is Active.",
+  description: "Sharp pet update *Brooo This Updates day Hot* Pet Update Comes With All Details Explanations on how to work the update, On how to get clients, pages to work, place to get working pictures, place to get working tools for the pet update, website to make your account get more engagements for more trust, audios & step by step guild on how to work this update, With FORMAT & ALL. Pet Update Is Active.",
   price: "30000",
   currency: "NGN",
   image: "https://i.ibb.co/C5YyMshD/IMG-20251221-WA0575.jpg",
