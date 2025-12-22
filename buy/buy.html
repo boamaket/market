@@ -12,13 +12,6 @@
   }
   h2,h3 { margin-bottom:10px; }
   .product { background:#fff; padding:15px; margin:15px 0; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.05); }
-.product img {
-    width: 180px;         /* fixed nice size */
-    max-width: 90%;       /* responsive on small screens */
-    display: block;
-    margin: 10px auto;    /* centers the image */
-    border-radius: 6px;
-}
   .product-details p { margin:5px 0; }
   button { padding:10px; margin:5px 0; cursor:pointer; border:none; border-radius:6px; background:#000; color:#fff; }
 
@@ -161,7 +154,6 @@
 
   /* small spacing tweak so header doesn't overlap content */
   .header-wrap { margin-bottom:12px; display:block; }
-
   /* ===== PAYMENT RESULT POPUP ===== */
   #paymentPopup {
     display: none;
@@ -190,9 +182,6 @@
   }
   .popup-success { border: 2px solid #28a745; color:#155724; background:#d4edda; }
   .popup-error { border: 2px solid #dc3545; color:#721c24; background:#f8d7da; }
-  .pname {
-    font-size:40px;
-  }
   /* ============================
    GLOBAL SMOOTH SCROLL
 ============================ */
@@ -203,11 +192,6 @@ html {
 /* ============================
    PRODUCT ENTRY ANIMATION
 ============================ */
-.product {
-  animation: productSlideUp 0.6s ease both;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-
 @keyframes productSlideUp {
   from {
     opacity: 0;
@@ -481,6 +465,85 @@ body.dark #closeAds {
 .am {
   font-size:25px;
 }
+/* ============================
+   PRODUCT GRID (NEW)
+============================ */
+#productsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+/* SMALL PRODUCT CARD */
+.product {
+  margin: 0; /* override old vertical margin */
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* PRODUCT IMAGE */
+.product img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* PRODUCT NAME (SMALL) */
+.pname {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 6px 0;
+}
+
+/* PRICE */
+.price {
+  font-size: 13px;
+  color: white;
+}
+/* ============================
+   PRODUCT DETAILS MODAL (SCROLLABLE & USER-FRIENDLY)
+============================ */
+#productDetailsModal {
+  margin-top: 100px;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: flex-start; /* ⬅️ important */
+  z-index: 99998;
+  overflow-y: auto;        /* ⬅️ allow scrolling */
+  padding: 16px 10px;
+}
+
+#productDetailsModal .modal-content {
+  background: #fff;
+  padding: 18px;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 14px;
+  animation: slideUpModal 0.35s ease;
+  max-height: 90vh;        /* ⬅️ limit height */
+  overflow-y: auto;        /* ⬅️ internal scroll */
+}
+
+/* Dark mode support */
+body.dark #productDetailsModal .modal-content {
+  background: #101214;
+  color: #e6eef8;
+}
+/* ============================
+   PRODUCT DETAILS IMAGE SIZE FIX
+============================ */
+#pdImage {
+  width: 100%;
+  max-height: 220px;   /* ⬅️ THIS CONTROLS THE SIZE */
+  object-fit: cover;   /* ⬅️ keeps image clean */
+  border-radius: 10px;
+  display: block;
+}
 </style>
 </head>
 
@@ -600,7 +663,28 @@ body.dark #closeAds {
 
 <!-- PRODUCTS -->
 <div id="productsContainer"></div>
+<!-- PRODUCT DETAILS MODAL -->
+<div id="productDetailsModal" style="display:none;">
+  <div class="modal-content">
+    <button id="closeProductDetails" class="nnbb2">Close</button>
 
+    <img id="pdImage" style="width:100%;border-radius:10px;margin-bottom:10px">
+
+    <h3 id="pdName"></h3>
+    <p id="pdPrice"></p>
+    <p id="pdDescription"></p>
+
+    <a id="pdVisitBtn" target="_blank"
+       class="nnbb"
+       style="text-decoration:none;display:block;text-align:center;">
+      🔗 Visit Product
+    </a>
+
+    <button id="pdBuyBtn" class="nnbb">
+      🛒 Buy Now
+    </button>
+  </div>
+</div>
 <!-- BUY MODAL -->
 <div id="buyModal">
   <div class="modal-content">
@@ -676,7 +760,30 @@ style="background:#444;margin-bottom:10px;">⬅️ Change Payment Method</button
 </div>
   </div>
 </div>
-
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  z-index:100001;
+  justify-content:center;
+  align-items:center;
+">
+  <div style="
+    background:#fff;
+    padding:20px 25px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:bold;
+    font-size:16px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.3);
+    color :black;
+  ">
+    ⏳ Submitting payment…<br>
+    Please wait
+  </div>
+</div>
 <!-- PAYMENT RESULT POPUP -->
 <div id="paymentPopup">
   <div class="popup-content" id="paymentPopupContent"></div>
@@ -684,7 +791,6 @@ style="background:#444;margin-bottom:10px;">⬅️ Change Payment Method</button
 
 <!-- Monetag SDK -->
 <script src="//libtl.com/sdk.js" data-zone="9830606" data-sdk="show_9830606"></script>
-
 <script>
 // TELEGRAM WEBAPP
 // =============================================
@@ -758,7 +864,13 @@ function showMessage(message, type="success") {
   box.style.display = "block";
   box.onclick = () => { box.style.display = "none"; };
 }
+function showLoading() {
+  document.getElementById("loadingOverlay").style.display = "flex";
+}
 
+function hideLoading() {
+  document.getElementById("loadingOverlay").style.display = "none";
+}
 // COPY FUNCTION
 function copyText(id){
   const text = document.getElementById(id).innerText;
@@ -883,31 +995,59 @@ function goBackToPaymentMethods() {
 
     document.getElementById("choosePayMethod").style.display = "block";
 }
+// PRODUCT DETAILS MODAL LOGIC
+const productDetailsModal = document.getElementById("productDetailsModal");
+
+function openProductDetails(product) {
+  currentProduct = product;
+
+  document.getElementById("pdImage").src = product.image;
+  document.getElementById("pdName").textContent = product.name;
+  document.getElementById("pdPrice").textContent =
+    `Price: ${product.price} ${product.currency}`;
+  document.getElementById("pdDescription").textContent =
+    product.description || "No description provided";
+
+  document.getElementById("pdVisitBtn").href = product.url;
+
+  productDetailsModal.style.display = "flex";
+}
+
+document.getElementById("closeProductDetails").onclick = () => {
+  productDetailsModal.style.display = "none";
+};
+
+document.getElementById("pdBuyBtn").onclick = () => {
+  productDetailsModal.style.display = "none";
+  showPaymentInfo();
+  openBuyModal();
+};
 function renderProducts(){
   container.innerHTML = "";
-  productsData.forEach((prod)=>{
-    const div = document.createElement('div');
-    div.className="product";
-    div.innerHTML=`
-      <div class="product-details">
-        <p class="pname"><b>${prod.name}</b></p>
-        <br>
-     <img src="${prod.image}">
-        <p>URL: <a href="${prod.url}" target="_blank">${prod.url}</a></p>
-        <p>Price: ${prod.price} ${prod.currency}</p>
-        <p>${prod.description}</p>
-        <button class="buyBtn"> Buy Now </button>
-      </div>
-    `;
-    container.appendChild(div);
-  });
 
-  document.querySelectorAll('.buyBtn').forEach((btn,i)=>{
-    btn.onclick = ()=>{
-      currentProduct = productsData[i];
+  productsData.forEach((prod) => {
+    const div = document.createElement('div');
+    div.className = "product";
+
+    div.innerHTML = `
+      <img src="${prod.image}">
+      <p class="pname">${prod.name}</p>
+      <p class="price">${prod.price} ${prod.currency}</p>
+      <button class="buyBtn">Buy Now</button>
+    `;
+
+    /* ✅ CLICK PRODUCT → OPEN PRODUCT DETAILS MODAL */
+    div.onclick = () => openProductDetails(prod);
+
+    /* ✅ BUY BUTTON → PAYMENT ONLY */
+    div.querySelector(".buyBtn").onclick = (e) => {
+      e.stopPropagation(); // ⛔ VERY IMPORTANT
+      currentProduct = prod;
       showPaymentInfo();
       openBuyModal();
     };
+
+    container.appendChild(div);
   });
 }
 
@@ -932,11 +1072,9 @@ function sendTelegramMessage(chatId, message) {
   formData.append("chat_id", chatId);
   formData.append("text", message);
 
-  fetch(API_ENDPOINT, {
+  return fetch(API_ENDPOINT, {
     method: "POST",
-    headers: {
-      "X-API-KEY": API_KEY
-    },
+    headers: { "X-API-KEY": API_KEY },
     body: formData
   });
 }
@@ -947,96 +1085,105 @@ function sendTelegramPhoto(chatId, file, caption) {
   formData.append("text", caption);
   formData.append("file", file);
 
-  fetch(API_ENDPOINT, {
+  return fetch(API_ENDPOINT, {
     method: "POST",
-    headers: {
-      "X-API-KEY": API_KEY
-    },
+    headers: { "X-API-KEY": API_KEY },
     body: formData
   });
 }
 
 // PAYMENT SUBMISSION
-document.getElementById('submitPayment').onclick = () => {
-  const fileInput = document.getElementById('paymentScreenshot');
-  const file = fileInput.files[0];
-  const method = document.getElementById('contactMethod').value;
-  const contact = document.getElementById('buyerContact').value;
+// PAYMENT SUBMISSION (ASYNC + LOADING + SAFE)
+document.getElementById('submitPayment').onclick = async () => {
+  try {
+    const file = document.getElementById('paymentScreenshot').files[0];
+    const method = document.getElementById('contactMethod').value;
+    const contact = document.getElementById('buyerContact').value;
 
-  if(!file) return showPaymentPopup("Upload payment screenshot!","error");
-  if(!method) return showPaymentPopup("Select contact method!","error");
-  if(!contact) return showPaymentPopup("Enter your contact!","error");
+    if (!file) return showPaymentPopup("Upload payment screenshot!", "error");
+    if (!method) return showPaymentPopup("Select contact method!", "error");
+    if (!contact) return showPaymentPopup("Enter your contact!", "error");
 
-  buyModal.style.display = "none";
+    buyModal.style.display = "none";
+    showLoading(); // ⏳ START LOADING
 
-  const buyerName = tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : "");
-  const buyerUsername = tgUser.username ? "@" + tgUser.username : "";
-  const buyerId = tgUser.id || "";
-// BUYER MANAGEMENT LINK (FOR ADMIN ONLY)
-const buyerManageLink =
-  `https://intelligent17-oss.github.io/market-/ma/buyers.html` +
-  `?product_id=${encodeURIComponent(currentProduct.id)}` +
-  `&buyer_id=${encodeURIComponent(buyerId)}` +
-  `&buyer_username=${encodeURIComponent((buyerUsername || "").replace("@",""))}` +
-  `&buyer_contact=${encodeURIComponent(contact)}`;
-  const sellerId = currentProduct.sellerId;
-  const sellerContact = currentProduct.sellerContact || "Not provided";
-  const productName = currentProduct.name;
-  const productPrice = currentProduct.price + " " + currentProduct.currency;
-  const productId = currentProduct.id;
-  const productURL = currentProduct.url;
+    const buyerName =
+      tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : "");
+    const buyerUsername = tgUser.username ? "@" + tgUser.username : "";
+    const buyerId = tgUser.id || "";
 
-  // Show popup success message
-  showPaymentPopup(`
-    Payment Submitted Successfully!<br><br>
-    <b>Product:</b> ${productName}<br>
-    <b>Price:</b> ${productPrice}<br>
-    Admin will review it soon.
-  `, "success");
+    const productName = currentProduct.name;
+    const productPrice = currentProduct.price + " " + currentProduct.currency;
+    const productId = currentProduct.id;
+    const productURL = currentProduct.url;
+    const sellerId = currentProduct.sellerId;
+    const sellerContact = currentProduct.sellerContact || "Not provided";
 
-  // Notify admin with screenshot
-const adminCaption = `
+    const buyerManageLink =
+      `https://intelligent17-oss.github.io/market-/ma/buyers.html` +
+      `?product_id=${encodeURIComponent(productId)}` +
+      `&buyer_id=${encodeURIComponent(buyerId)}` +
+      `&buyer_username=${encodeURIComponent((buyerUsername || "").replace("@",""))}` +
+      `&buyer_contact=${encodeURIComponent(contact)}`;
+
+    const adminCaption = `
 <b>🧾 NEW PAYMENT SUBMITTED</b>
 
-<b>PRODUCT DETAILS</b>
-• Name: ${productName}
-• Product ID: ${productId}
+<b>PRODUCT</b>
+• ${productName}
+• ID: ${productId}
 • Price: ${productPrice}
-• Product URL: ${productURL}
+• URL: ${productURL}
 
-<b>BUYER DETAILS</b>
-• Name: ${buyerName}
-• Username: ${buyerUsername || "Not set"}
-• Buyer ID: ${buyerId}
-• Buyer Contact: ${contact} (${method})
+<b>BUYER</b>
+• ${buyerName}
+• ${buyerUsername || "No username"}
+• ID: ${buyerId}
+• Contact: ${contact} (${method})
 
 <b>🔗 BUYER MANAGEMENT LINK</b>
-(Admin should send this to buyer after confirmation)
 ${buyerManageLink}
 
-<b>SELLER DETAILS</b>
-• Seller ID: ${sellerId}
-• Seller Contact: ${sellerContact}
+<b>SELLER</b>
+• ID: ${sellerId}
+• Contact: ${sellerContact}
 `;
-  sendTelegramPhoto(ADMIN_ID, file, adminCaption);
 
-  const buyerMessage = `
-A request to buy <b>${productName}</b> for <b>${productPrice}</b> has been submitted.
-Admin will review it within a few hours.
-You can request a refund or release the payment once admin verifies and notifies the seller.
-`;
-  sendTelegramMessage(buyerId, buyerMessage);
+    // ⏳ WAIT FOR TELEGRAM API
+    await sendTelegramPhoto(ADMIN_ID, file, adminCaption);
 
-  const sellerMessage = `
-Someone requested to buy your product: <b>${productName}</b>
-Product ID: ${productId}
-Price: ${productPrice}
-Admin is reviewing the buyer's payment.
-Once verified, you will be credited after the buyer releases the money.
-`;
-  sendTelegramMessage(sellerId, sellerMessage);
+    await sendTelegramMessage(
+      buyerId,
+      `Your payment for <b>${productName}</b> was submitted.
+Admin will review it shortly.`
+    );
+
+    await sendTelegramMessage(
+      sellerId,
+      `Someone requested to buy your product: <b>${productName}</b>.
+Admin is reviewing the payment.`
+    );
+
+    hideLoading(); // ✅ STOP LOADING
+
+    showPaymentPopup(
+      `✅ Payment Submitted Successfully<br><br>
+       <b>${productName}</b><br>
+       ${productPrice}<br><br>
+       Admin will review it shortly.`,
+      "success"
+    );
+
+  } catch (err) {
+    console.error(err);
+    hideLoading();
+
+    showPaymentPopup(
+      "❌ Payment submission failed.<br>Please check your internet connection and try again.",
+      "error"
+    );
+  }
 };
-
 // PAYMENT POPUP FUNCTION
 function showPaymentPopup(message, type="success"){
   const popup = document.getElementById("paymentPopup");
