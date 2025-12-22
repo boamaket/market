@@ -249,13 +249,13 @@ themeToggle.onclick = () => {
 };
 
 /* ----- TELEGRAM WEBAPP ----- */
+/* ----- BACKEND CONFIG (RENDER SERVER) ----- */
+const RENDER_URL = "https://marketplace-qt9l.onrender.com/send";
+
+const API_KEY = "INTELLIGENT_PRIVATE_KEY_2025";
 const tg = window.Telegram?.WebApp;
 if(tg){ tg.expand(); Telegram.WebApp.ready(); }
 const tgUser = (tg && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) ? Telegram.WebApp.initDataUnsafe.user : { first_name:'Guest', id:0 };
-
-/* BOT CONFIG - set your real BOT_TOKEN and ADMIN_ID */
-const BOT_TOKEN = "7514817340:AAGp_ILOdTeH77TXwLcQmv5NxSIWAzW80Ag";
-const ADMIN_ID = "6976365864";
 
 /* WHATSAPP LINK */
 const WHATSAPP_LINK = "https://wa.me/?text=*Hello!%20guy's*%20%F0%9F%8C%9F%0A%F0%9F%8E%89%20*Looking%20for%20marketplace%20where%20you%20can%20sell%20your%20log's*%20%0A%F0%9F%92%A0%20*Connect%20with%20real%20buyer's%20and%20seller's%20with%20escrow%20trading*%20%0A%20*Follow%20this%20link%20to%20telegram%20now%20to%20get%20started%20%F0%9F%91%87%F0%9F%91%87*%20%0A%20*https%3A%2F%2Ft.me%2Fintelligentmarketbot%3Fstart%3Dar1810544353*";
@@ -435,29 +435,6 @@ function handleSubmitFailure(msg){
   setStatus(`❌ Submission failed: ${msg}`, 'error');
   showPopup(`Submission failed: ${msg}`, 'error', true);
 }
-
-/* TELEGRAM MESSAGE SENDING (send to admin and notify seller) */
-function sendTelegramMessages(adminText, sellerText){
-  // send to admin first then to seller (return promise)
-  const send = (chat_id, text) => fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type':'application/json' },
-    body: JSON.stringify({ chat_id: String(chat_id), text, parse_mode: 'HTML' })
-  }).then(r => r.json());
-
-  return send(ADMIN_ID, adminText).then(adminRes => {
-    if(!adminRes || !adminRes.ok) return Promise.reject(new Error('Failed to notify admin.'));
-    // notify seller (if they have an id)
-    if(tgUser && tgUser.id){
-      return send(tgUser.id, sellerText).then(sellerRes => {
-        // even if seller notification fails, treat admin ok as success
-        return { adminRes, sellerRes };
-      });
-    }
-    return { adminRes, sellerRes: null };
-  });
-}
-
 /* SUBMIT HANDLER */
 submitBtn.addEventListener('click', async () => {
   // must have shared flag
@@ -524,23 +501,63 @@ Product ID: ${productId}
 
   setStatus('Submitting product...', 'warning');
 
-  try{
-    const res = await sendTelegramMessages(adminMessage, sellerMessage);
-    // check admin response ok
-    if(res && res.adminRes && res.adminRes.ok){
-      handleSubmitSuccess(productId);
-    } else {
-      throw new Error('Telegram returned an error.');
-    }
-  } catch(err){
-    console.error('Submit error', err);
-    handleSubmitFailure(err.message || 'Network or Telegram error.');
-  }
-});
+  try {
+  const payload = {
+    product_id: productId,
+    product_name: name,
+    price: `${price} ${currency}`,
+    image: img,
+    url: url,
+    description: desc,
+    contact: contact,
+    seller_name: tgUser.first_name || "",
+    seller_username: tgUser.username ? "@" + tgUser.username : "",
+    seller_id: tgUser.id ? String(tgUser.id) : "N/A",
+    date: dt,
+    admin_message: adminMessage,
+    seller_message: sellerMessage
+  };
 
+  // 1️⃣ Send to ADMIN
+  const adminRes = await sendToBackend("6976365864", payload);
+
+  if (!adminRes || adminRes.ok !== true) {
+    throw new Error(adminRes?.error || "Backend rejected request");
+  }
+
+  // 2️⃣ Send confirmation to SELLER
+  if (tgUser && tgUser.id) {
+    await sendToBackend(String(tgUser.id), {
+      message: sellerMessage
+    });
+  }
+
+  handleSubmitSuccess(productId);
+} catch (err) {
+  console.error("Submit error", err);
+  handleSubmitFailure(err.message || "Network / Backend error.");
+}
+}); // ✅ CLOSE submitBtn event listener
 /* Simple html-escape */
 function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function sendToBackend(chatId, payload) {
+  const formData = new FormData();
+  formData.append("chat_id", chatId);
 
+  for (const key in payload) {
+    formData.append(key, payload[key]);
+  }
+
+  const res = await fetch(RENDER_URL, {
+    method: "POST",
+    headers: {
+  "X-API-KEY": API_KEY
+},
+    body: formData
+  });
+
+  return res.json();
+}
 /* ----- MONETAG ADS SCHEDULING ----- */
 /* We'll call the provided show_9830606() if available. Use a safe wrapper and debounce to avoid spamming. */
 let adDebounce = false;
