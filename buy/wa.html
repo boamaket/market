@@ -119,7 +119,6 @@ Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
 const user = Telegram.WebApp.initDataUnsafe.user || {};
-const BOT_TOKEN = "7514817340:AAGp_ILOdTeH77TXwLcQmv5NxSIWAzW80Ag";   // ⚠️ put in backend later (don’t keep token in frontend)
 const ADMIN_ID  = "6940101627";
 
 /* =========================
@@ -279,11 +278,16 @@ function switchMethod(){
 /* =========================
    TELEGRAM SEND
 ========================= */
-function sendTG(chatId,text){
-  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ chat_id:chatId, text })
+function sendTG(chatId, text){
+  fetch("https://marketplace-qt9l.onrender.com/send", {
+    method: "POST",
+    headers: {
+      "X-API-KEY": "INTELLIGENT_PRIVATE_KEY_2025"
+    },
+    body: new URLSearchParams({
+      chat_id: chatId,
+      text: text
+    })
   });
 }
 
