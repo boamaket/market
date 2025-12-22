@@ -1251,7 +1251,7 @@ window.addEventListener("load", () => {
     setTimeout(() => { showAd(); setInterval(showAd, 40000); }, 10000);
 });
 function getProductLink(productId) {
-  return `https://t.me/intmarketbot/marketplace?startapp=product_${productId}`;
+  return `https://t.me/intmarketbot/explore?startapp=product_${productId}`;
 }
 
 function copyProductLink(productId) {
@@ -1412,45 +1412,37 @@ document.getElementById("closeAds").onclick = () => {
 </script>
 <script>
 /* =====================================
-   TELEGRAM startapp PRODUCT HANDLER
+   TELEGRAM startapp AUTO PRODUCT + BUY
 ===================================== */
 (function () {
   const tg = Telegram.WebApp;
   const startParam = tg.initDataUnsafe?.start_param;
 
-  if (!startParam) return;
-
-  // Expecting format: product_P1764508470835
-  if (!startParam.startsWith("product_")) return;
+  if (!startParam || !startParam.startsWith("product_")) return;
 
   const productId = startParam.replace("product_", "");
+  const product = productsData.find(p => p.id === productId);
 
-  // Find product
-  const index = productsData.findIndex(p => p.id === productId);
-  if (index === -1) {
+  if (!product) {
     showMessage("Product not found ❌", "error");
     return;
   }
 
-  // Scroll + highlight product
+  // Wait until products render
   setTimeout(() => {
-    const productEls = document.querySelectorAll(".product");
-    const target = productEls[index];
-    if (!target) return;
+    currentProduct = product;
 
-    // Focus animation
-    productEls.forEach(p => p.classList.remove("focused"));
-    target.classList.add("focused");
+    // 🔥 Open product details automatically
+    openProductDetails(product);
 
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+    // 🔥 Auto-open Buy modal after short delay
+    setTimeout(() => {
+      showPaymentInfo();
+      openBuyModal();
+    }, 1200);
 
-    // Auto-select product for buying
-    currentProduct = productsData[index];
-    showMessage("Product loaded ✅ Scroll down to buy", "success");
-  }, 500);
+    showMessage("Product loaded ✅ Ready to buy", "success");
+  }, 600);
 })();
 </script>
 </body>
