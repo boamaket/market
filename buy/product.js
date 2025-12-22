@@ -1,25 +1,6 @@
 // PRODUCTS DATA
 const productsData = [
 {
-  id: "P1766393974610",
-  name: "Sharp investment update",
-  description: "*INVESTMENT UPDATE*💰
-
-*THE UPDATE CONSISTS OF* 👇*Tutorial guide on how to set up your working account*
-
-*Format for the BTC INVESTMENT*
-
-*PLENTY OF PROVES TO SHOW YOUR CL THAT THE INVESTMENT IS LEGIT AND PROFITABLE*
-
-*BILLING 1, 2 AND 3*",
-  price: "30000",
-  currency: "NGN",
-  image: "https://i.ibb.co/bMGWtG1D/IMG-20251222-WA0020.jpg",
-  sellerId: 6070010078,
-  sellerContact: "+2348111625143",
-  url: "https://ibb.co/RkJv8J2d"
-},
-{
   id: "P1766393772125",
   name: "Latest sharp pet update fast cash out",
   description: "Sharp pet update
