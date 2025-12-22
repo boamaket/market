@@ -242,9 +242,6 @@ function openWhatsApp() {
 const tg = window.Telegram.WebApp;
 tg.expand();
 
-const BOT_TOKEN = "8343456123:AAHFDql43DlSk_G2ob6kTV-Gi9mV3Rz8Km4";
-const ADMIN_ID = "6976365864";
-
 let selectedPlan = "";
 
 function choosePlan(plan){
@@ -277,8 +274,8 @@ function previewImage(input, previewId){
   reader.onload = () => document.getElementById(previewId).src = reader.result;
   reader.readAsDataURL(file);
 }
-
-/* ✅ FIXED: NOW SENDS USERNAME, ID, NAME + NOTIFIES BUYER */
+</script>
+<script>
 async function submitPayment(type) {
 
   let whatsapp = type === "NGN"
@@ -289,10 +286,9 @@ async function submitPayment(type) {
     ? document.getElementById("ngnProof").files[0]
     : document.getElementById("usdProof").files[0];
 
-  if (!whatsapp) { alert("Enter WhatsApp number"); return; }
-  if (!proof) { alert("Upload payment screenshot"); return; }
+  if (!whatsapp) return alert("Enter WhatsApp number");
+  if (!proof) return alert("Upload payment screenshot");
 
-  // Show success page immediately
   showPage("successPage");
 
   let user = tg.initDataUnsafe?.user || {};
@@ -300,44 +296,38 @@ async function submitPayment(type) {
   let caption = `
 🚨 NEW PREMIUM PAYMENT
 
-👤 Username: @${user.username || "Not Available"}
-🆔 Telegram ID: ${user.id || "Not Available"}
-📛 Full Name: ${user.first_name || "Not Available"}
+👤 Username: @${user.username || "N/A"}
+🆔 Telegram ID: ${user.id || "N/A"}
+📛 Full Name: ${user.first_name || "N/A"}
 
 🎁 Plan: ${selectedPlan}
 💳 Method: ${type}
 📱 WhatsApp: ${whatsapp}
 
-⏳ Awaiting approval.
+⏳ Awaiting approval
 `;
 
   let formData = new FormData();
-  formData.append("chat_id", ADMIN_ID);
+  formData.append("chat_id", "6976365864"); // ADMIN ID
   formData.append("photo", proof);
   formData.append("caption", caption);
 
   try {
-    // SEND TO ADMIN
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-      method: "POST",
-      body: formData
-    });
+  const res = await fetch("https://premiumback.onrender.com/telegram/send", {
+    method: "POST",
+    headers: {
+      "X-API-KEY": "PREMIUM_KEY"
+    },
+    body: formData
+  });
 
-    // SEND MESSAGE TO BUYER
-    if (user.id) {
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: user.id,
-          text: "✅ Payment received!\n\nYour payment has been submitted successfully.\nAdmin will confirm within 24 hours.\n\nIf you need help, send the admin a WhatsApp message:\nhttps://wa.me/2349114301708"
-        })
-      });
-    }
-
-  } catch (err) {
-    alert("⚠️ Payment submitted but admin notification failed. Contact admin.");
+  if (!res.ok) {
+    alert("⚠️ Payment submitted but notification failed. Please contact admin.");
   }
+
+} catch (e) {
+  alert("⚠️ Network error. Please contact admin.");
+}
 }
 </script>
 <script>
