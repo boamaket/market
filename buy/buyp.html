@@ -307,27 +307,40 @@ async function submitPayment(type) {
 ⏳ Awaiting approval
 `;
 
+  // -------- ADMIN MESSAGE (PHOTO + CAPTION) --------
   let formData = new FormData();
   formData.append("chat_id", "6976365864"); // ADMIN ID
   formData.append("photo", proof);
   formData.append("caption", caption);
 
   try {
-  const res = await fetch("https://premiumback.onrender.com/telegram/send", {
-    method: "POST",
-    headers: {
-      "X-API-KEY": "PREMIUM_KEY"
-    },
-    body: formData
-  });
+    await fetch("https://premiumback.onrender.com/telegram/send", {
+      method: "POST",
+      headers: {
+        "X-API-KEY": "PREMIUM_KEY"
+      },
+      body: formData
+    });
 
-  if (!res.ok) {
-    alert("⚠️ Payment submitted but notification failed. Please contact admin.");
+    // -------- BUYER MESSAGE (TEXT ONLY) --------
+    let buyerForm = new FormData();
+    buyerForm.append("chat_id", user.id);
+    buyerForm.append(
+      "text",
+      "✅ <b>Payment Submitted Successfully</b>\n\n⏳ Your payment is under review.\n\nYou will receive confirmation shortly.\n\nThank you for choosing Premium."
+    );
+
+    await fetch("https://premiumback.onrender.com/telegram/send", {
+      method: "POST",
+      headers: {
+        "X-API-KEY": "PREMIUM_KEY"
+      },
+      body: buyerForm
+    });
+
+  } catch (e) {
+    alert("⚠️ Network error. Please contact admin.");
   }
-
-} catch (e) {
-  alert("⚠️ Network error. Please contact admin.");
-}
 }
 </script>
 <script>
