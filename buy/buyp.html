@@ -253,7 +253,32 @@ function openWhatsApp() {
 const tg = window.Telegram.WebApp;
 tg.expand();
 
+const user = tg.initDataUnsafe?.user;
 let selectedPlan = "";
+
+// ✅ PREMIUM CHECK (runs immediately)
+if (user && Array.isArray(window.premiumUsers)) {
+  const isPremium = premiumUsers.includes(Number(user.id));
+
+  if (isPremium) {
+    // Hide all normal pages
+    [
+      "planPage",
+      "methodPage",
+      "ngnPage",
+      "usdPage",
+      "successPage"
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    });
+
+    // Show already premium message
+    document
+      .getElementById("alreadyPremiumPage")
+      .classList.remove("hidden");
+  }
+}
 
 function choosePlan(plan){
   selectedPlan = plan;
@@ -392,28 +417,6 @@ function copyNGNAccount() {
     document.body.removeChild(temp);
     alert("✅ Account number copied!");
   });
-}
-</script>
-<script>
-const tg = window.Telegram.WebApp;
-tg.expand();
-
-const user = tg.initDataUnsafe?.user;
-
-if (user && typeof premiumUsers !== "undefined") {
-  const isPremium = premiumUsers.includes(Number(user.id));
-
-  if (isPremium) {
-    // Hide all pages
-    ["planPage","methodPage","ngnPage","usdPage","successPage"]
-      .forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add("hidden");
-      });
-
-    // Show already premium page
-    document.getElementById("alreadyPremiumPage").classList.remove("hidden");
-  }
 }
 </script>
 </body>
