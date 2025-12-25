@@ -257,28 +257,40 @@ const user = tg.initDataUnsafe?.user;
 let selectedPlan = "";
 
 // ✅ PREMIUM CHECK (runs immediately)
-if (user && Array.isArray(window.premiumUsers)) {
-  const isPremium = premiumUsers.includes(Number(user.id));
+document.addEventListener("DOMContentLoaded", () => {
+  const tg = window.Telegram.WebApp;
+  tg.expand();
 
-  if (isPremium) {
-    // Hide all normal pages
-    [
-      "planPage",
-      "methodPage",
-      "ngnPage",
-      "usdPage",
-      "successPage"
-    ].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.classList.add("hidden");
-    });
+  const user = tg.initDataUnsafe?.user;
 
-    // Show already premium message
-    document
-      .getElementById("alreadyPremiumPage")
-      .classList.remove("hidden");
-  }
-}
+  if (!user) return;
+
+  // wait until premiumUsers exists
+  const waitForPremium = setInterval(() => {
+    if (Array.isArray(premiumUsers)) {
+      clearInterval(waitForPremium);
+
+      const isPremium = premiumUsers.includes(Number(user.id));
+
+      if (isPremium) {
+        [
+          "planPage",
+          "methodPage",
+          "ngnPage",
+          "usdPage",
+          "successPage"
+        ].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add("hidden");
+        });
+
+        document
+          .getElementById("alreadyPremiumPage")
+          .classList.remove("hidden");
+      }
+    }
+  }, 50);
+});
 
 function choosePlan(plan){
   selectedPlan = plan;
