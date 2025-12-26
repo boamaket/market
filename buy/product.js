@@ -1,6 +1,17 @@
 // PRODUCTS DATA
 const productsData = [
 {
+  id: "P1766771390692",
+  name: "Page Facebook",
+  description: "Nigeria Facebook",
+  price: "3000",
+  currency: "NGN",
+  image: "https://www.facebook.com/FakSommy2",
+  sellerId: 7836649567,
+  sellerContact: "234906 626 4238",
+  url: "https://www.facebook.com/FakSommy2"
+},
+{
   id: "P1766409670102",
   name: "5yrs old Facebook switch profile, has pages and can create more",
   description: "The acct is flexible and Fit for any kind of job .. Has Already created Celeb page and can create more … With 100 💯 percent bombing responses , secured ✅ bombing response ✅, pages ✅",
