@@ -1,6 +1,28 @@
 // PRODUCTS DATA
 const productsData = [
 {
+  id: "P1766821908070",
+  name: "Sharp suscribed Netflix with monthly auto renewal",
+  description: "Super affordable and high quality viewing",
+  price: "5000",
+  currency: "NGN",
+  image: "https://i.ibb.co/HpLGGhB9/IMG-3093.png",
+  sellerId: 7227113353,
+  sellerContact: "+2347075433008",
+  url: "https://www.netflix.com/account/membership"
+},
+{
+  id: "P1766821221216",
+  name: "3yrs old Tiktok with Natural followers and Likes",
+  description: "Super affordable TikTok with real likes and followers and 💯 percent bombing response",
+  price: "5500",
+  currency: "NGN",
+  image: "https://i.ibb.co/DP2Mbp6w/IMG-3078.png",
+  sellerId: 7227113353,
+  sellerContact: "+2347075433008",
+  url: "https://www.tiktok.com/@josephfrosh15?_r=1&_t=ZS-92Z85yu31n6"
+},
+{
   id: "P1766771390692",
   name: "Page Facebook",
   description: "Nigeria Facebook",
