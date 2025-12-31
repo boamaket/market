@@ -1,6 +1,17 @@
 // PRODUCTS DATA
 const productsData = [
 {
+  id: "P1766881786588",
+  name: "TIKTOK ACCOUNT-FOLLOWERS 1K+ FOLLOWERS",
+  description: "Tiktok account",
+  price: "7000",
+  currency: "NGN",
+  image: "https://i.ibb.co/wZbzJ1YM/Screenshot-20251223-114745.png",
+  sellerId: 7807892678,
+  sellerContact: "+234 8061724982",
+  url: "https://vm.tiktok.com/ZSHKtgrmuvf58-TcCL2/"
+},
+{
   id: "P1766821908070",
   name: "Sharp suscribed Netflix with monthly auto renewal",
   description: "Super affordable and high quality viewing",
