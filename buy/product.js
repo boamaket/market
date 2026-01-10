@@ -199,17 +199,6 @@ const productsData = [
   url: "https://www.facebook.com/share/1By4oU18YF/?mibextid=wwXIfr"
 },
 {
-  id: "P1765526244522",
-  name: "AUSTRALIAN TIKTOK 229 FOLLOWERS",
-  description: "Freshly spammed Australia TikTok with outlook mail. Followers on Amassing",
-  price: "7000",
-  currency: "NGN",
-  image: "https://ibb.co/MkFN0Cdp",
-  sellerId: 8097634090,
-  sellerContact: "Whatsapp: +2349067581749",
-  url: "https://tiktok.com/@laze1977"
-},
-{
   id: "P1765526509190",
   name: "AUSTRALIAN FEMALE TIKTOK 140 FOLLOWERS....& AMASSING",
   description: "FRESHLY SPAMMED AUSTRALIAN FEMALE TIKTOK WITH EMAIL",
