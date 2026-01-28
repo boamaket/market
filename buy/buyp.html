@@ -364,10 +364,10 @@ async function submitPayment(type) {
   formData.append("caption", caption);
 
   try {
-    await fetch("https://premiumback.onrender.com/telegram/send", {
+    await fetch("https://premium-w42a.onrender.com/telegram/send", {
       method: "POST",
       headers: {
-        "X-API-KEY": "PREMIUM_KEY"
+        "X-API-KEY": "PREMIUMKEY"
       },
       body: formData
     });
@@ -380,10 +380,10 @@ async function submitPayment(type) {
       "✅ <b>Payment Submitted Successfully</b>\n\n⏳ Your payment is under review.\n\nYou will receive confirmation shortly.\n\nThank you for choosing Premium."
     );
 
-    await fetch("https://premiumback.onrender.com/telegram/send", {
+    await fetch("https://premium-w42a.onrender.com/telegram/send", {
       method: "POST",
       headers: {
-        "X-API-KEY": "PREMIUM_KEY"
+        "X-API-KEY": "PREMIUMKEY"
       },
       body: buyerForm
     });
