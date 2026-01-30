@@ -1,127 +1,6 @@
 // PRODUCTS DATA
 const productsData = [
 {
-  id: "P1766881786588",
-  name: "TIKTOK ACCOUNT-FOLLOWERS 1K+ FOLLOWERS",
-  description: "Tiktok account",
-  price: "7000",
-  currency: "NGN",
-  image: "https://i.ibb.co/wZbzJ1YM/Screenshot-20251223-114745.png",
-  sellerId: 7807892678,
-  sellerContact: "+234 8061724982",
-  url: "https://vm.tiktok.com/ZSHKtgrmuvf58-TcCL2/"
-},
-{
-  id: "P1766821908070",
-  name: "Sharp suscribed Netflix with monthly auto renewal",
-  description: "Super affordable and high quality viewing",
-  price: "6000",
-  currency: "NGN",
-  image: "https://i.ibb.co/HpLGGhB9/IMG-3093.png",
-  sellerId: 7227113353,
-  sellerContact: "+2347075433008",
-  url: "https://www.netflix.com/account/membership"
-},
-{
-  id: "P1766821221216",
-  name: "3yrs old Tiktok with Natural followers and Likes",
-  description: "Super affordable TikTok with real likes and followers and 💯 percent bombing response",
-  price: "6500",
-  currency: "NGN",
-  image: "https://i.ibb.co/DP2Mbp6w/IMG-3078.png",
-  sellerId: 7227113353,
-  sellerContact: "+2347075433008",
-  url: "https://www.tiktok.com/@josephfrosh15?_r=1&_t=ZS-92Z85yu31n6"
-},
-{
-  id: "P1766771390692",
-  name: "Page Facebook",
-  description: "Nigeria Facebook",
-  price: "3000",
-  currency: "NGN",
-  image: "https://www.facebook.com/FakSommy2",
-  sellerId: 7836649567,
-  sellerContact: "234906 626 4238",
-  url: "https://www.facebook.com/FakSommy2"
-},
-{
-  id: "P1766409670102",
-  name: "5yrs old Facebook switch profile, has pages and can create more",
-  description: "The acct is flexible and Fit for any kind of job .. Has Already created Celeb page and can create more … With 100 💯 percent bombing responses , secured ✅ bombing response ✅, pages ✅",
-  price: "7000",
-  currency: "NGN",
-  image: "https://i.ibb.co/yFq2N1Hr/IMG-3051.png",
-  sellerId: 7227113353,
-  sellerContact: "+2347075433008",
-  url: "https://www.facebook.com/share/16hPawqb1M/?mibextid=wwXIfr"
-},
-{
-  id: "P1766393772125",
-  name: "Latest sharp pet update fast cash out",
-  description: "Sharp pet update *Brooo This Updates day Hot* Pet Update Comes With All Details Explanations on how to work the update, On how to get clients, pages to work, place to get working pictures, place to get working tools for the pet update, website to make your account get more engagements for more trust, audios & step by step guild on how to work this update, With FORMAT & ALL. Pet Update Is Active.",
-  price: "31000",
-  currency: "NGN",
-  image: "https://i.ibb.co/C5YyMshD/IMG-20251221-WA0575.jpg",
-  sellerId: 6070010078,
-  sellerContact: "+2348111625143",
-  url: "https://ibb.co/tMv6xP8F"
-},
-{
-  id: "P1766393642488",
-  name: "Tiktok account with 1k+ follower's",
-  description: "5 years old Tiktok account with 1k+ followers",
-  price: "10000",
-  currency: "NGN",
-  image: "https://www.tiktok.com/@tinofx12?_r=1&_t=ZS-92Qi5YGIbKu",
-  sellerId: 6789580197,
-  sellerContact: "08139337058",
-  url: "https://www.tiktok.com/@tinofx12?_r=1&_t=ZS-92Qi5YGIbKu"
-},
-{
-  id: "P1766384669346",
-  name: "TikTok account",
-  description: "Strong TikTok account",
-  price: "15000",
-  currency: "NGN",
-  image: "https://i.ibb.co/ns8MR0gP/Screenshot-20251222-072229.png",
-  sellerId: 6940101627,
-  sellerContact: "Whatsapp +2349114301708",
-  url: "https://i.ibb.co/ns8MR0gP/Screenshot-20251222-072229.png"
-},
-{
-  id: "P1766129405718",
-  name: "6years Facebook with switch profile",
-  description: "Asa Facebook",
-  price: "6000",
-  currency: "NGN",
-  image: "https://i.ibb.co/Hf2yFty4/A0-ED14-AF-932-B-4194-B2-E4-C85-A8-F5-F6673.jpg",
-  sellerId: 8398812994,
-  sellerContact: "+2348123246776",
-  url: "https://www.facebook.com/share/1ZK4hRQCm6/?mibextid=wwXIfr"
-},
-{
-  id: "P1766130008946",
-  name: "7years Facebook with switch profile",
-  description: "Asa Facebook",
-  price: "6000",
-  currency: "NGN",
-  image: "https://i.ibb.co/mVQkDgMN/BA5-BC98-A-A0-CD-432-D-B158-0-D35-AFE59694.jpg",
-  sellerId: 8398812994,
-  sellerContact: "+2348123246776",
-  url: "https://www.facebook.com/share/1AeumZkWAY/?mibextid=wwXIfr"
-},
-{
-  id: "P1766130621099",
-  name: "5year Facebook with switch profile",
-  description: "Asa Facebook",
-  price: "6000",
-  currency: "NGN",
-  image: "https://i.ibb.co/My2BL0Rj/18-F8-C898-87-A6-4-C1-C-A800-D986-C39801-C3.jpg",
-  sellerId: 8398812994,
-  sellerContact: "+2348123246776",
-  url: "https://www.facebook.com/share/1FNqzVBkSt/?mibextid=wwXIfr"
-},
-{
   id: "P1765910987929",
   name: "intelligent premium, OTP BYPASS BOT ✔️✅",
   description: "Admin post✅ Buy intelligent Verification link premium and you will be able to hack any social media account and collect otp code at the same time, you can also hack bank and CC",
@@ -130,40 +9,7 @@ const productsData = [
   image: "https://i.ibb.co/FbR3cRLX/IMG-20251216-WA0026.jpg",
   sellerId: 8140042906,
   sellerContact: "Whatsapp +2348121697423",
-  url: "http://t.me/inamyophisintlinkbot/premium"
-},
-{
-  id: "P1765777198278",
-  name: "Facebook with switch 3k Followers",
-  description: "Facebook with switch profile page",
-  price: "6000",
-  currency: "NGN",
-  image: "https://i.ibb.co/1JGs8ppR/EF90224-A-6-EB4-415-E-AAFC-5527-B61-A6-DFC.png",
-  sellerId: 8398812994,
-  sellerContact: "+2348123246776",
-  url: "https://www.facebook.com/share/1J39xnZBwL/?mibextid=wwXIfr"
-},
-{
-  id: "P1765801180729",
-  name: "Hacked Germany 🇩🇪 TikTok",
-  description: "Hacked Germany 🇩🇪 TikTok has 500+ followers/ 2,500 likes 👍",
-  price: "6000",
-  currency: "NGN",
-  image: "https://i.ibb.co/C52j3D9f/B51-B4782-0-BCC-4-B65-A5-EA-109-D6-C51-C494.jpg",
-  sellerId: 8053188303,
-  sellerContact: "Whatsapp +2347066558601",
-  url: "https://www.tiktok.com/@user6061981226122?_r=1&_t=ZN-92F3ou1XHFe"
-},
-{
-  id: "P1765780966773",
-  name: "Asa Facebook with switch profile",
-  description: "6years Facebook",
-  price: "6000",
-  currency: "NGN",
-  image: "https://i.ibb.co/ZRJ4Y17s/82-FA62-A7-8574-4-E30-9369-EA3273-F1-F493.png",
-  sellerId: 8398812994,
-  sellerContact: "08123246776",
-  url: "https://www.facebook.com/share/1C14vZKJ8R/?mibextid=wwXIfr"
+  url: "http://t.me/intelligentverificationlinkbot"
 },
 {
   id: "P1765759893615",
@@ -176,61 +22,6 @@ const productsData = [
   sellerContact: "WhatsApp +2348121697423",
   url: "https://i.ibb.co/rbZnp2s/IMG-20240916-WA0013-1.jpg"
 },
-{
-  id: "P1765665447828",
-  name: "Facebook account",
-  description: "Afghanistan",
-  price: "6000",
-  currency: "NGN",
-  image: "https://i.ibb.co/Gfck1BWm/Screenshot-20251213-232350.jpg",
-  sellerId: 7639132061,
-  sellerContact: "+2348129086235",
-  url: "https://www.facebook.com/profile.php?id=61582133835196"
-},
-{
-  id: "P1765698764796",
-  name: "Facebook with switch profile",
-  description: "Facebook with switch profile",
-  price: "6000",
-  currency: "NGN",
-  image: "https://www.facebook.com/share/1By4oU18YF/?mibextid=wwXIfr",
-  sellerId: 8398812994,
-  sellerContact: "08123246776",
-  url: "https://www.facebook.com/share/1By4oU18YF/?mibextid=wwXIfr"
-},
-{
-  id: "P1765526509190",
-  name: "AUSTRALIAN FEMALE TIKTOK 140 FOLLOWERS....& AMASSING",
-  description: "FRESHLY SPAMMED AUSTRALIAN FEMALE TIKTOK WITH EMAIL",
-  price: "7000",
-  currency: "NGN",
-  image: "https://ibb.co/Lz3RC8gR",
-  sellerId: 8097634090,
-  sellerContact: "Whatsapp: +2349067581749",
-  url: "https://tiktok.com/@waselighis"
-},
-{
-  id: "P1765166520546",
-  name: "7 YEARS OLD FOREIGN TIKTOK",
-  description: "Fresh Netherland old TikTok",
-  price: "7500",
-  currency: "NGN",
-  image: "https://i.ibb.co/XrwzFnQJ/IMG-9625.png",
-  sellerId: 7436021331,
-  sellerContact: "Whatsapp: +2349121412096",
-  url: "https://www.tiktok.com/@siemdegroot08?_r=1&_t=ZG-922ZRkNqBuL"
-},
-{
-  id: "P1765163337840",
-  name: "15YEARS OLD TWITTER ACCOUNT",
-  description: "Old 15Years foreign Twitter",
-  price: "11000",
-  currency: "NGN",
-  image: "https://i.ibb.co/5hKyBM6Y/946f7fb0-2c40-475e-8daf-e1fe496f67c1.jpg",
-  sellerId: 7436021331,
-  sellerContact: "Whatsapp: +2349121412096",
-  url: "https://x.com/jemberoutlet?t=JU3B5yoEA4dCD0OvCfNAjQ&s=09"
-},
   {
   id: "P1764508470835",
   name: "Crypto & investment Telegram bot",
@@ -241,29 +32,5 @@ const productsData = [
   sellerId: 8140042906,
   sellerContact: "Whatsapp: +2348121697423",
   url: "https://t.me/lnytecobot"
-},
-  {
-  id: "P1764462838460",
-  name: "Broker website",
-  description: "Sharp broker/investment website Available, I also build and design all kind of websites",
-  price: "251000",
-  currency: "NGN",
-  image: "https://i.ibb.co/9krtf0GF/1743496836blue1.png",
-  sellerId: 6070010078,
-  sellerContact: "Whatsapp: +2348111625143",
-  url: "https://ibb.co/HfHdMyXW"
-},
-{
-  id: "P1764307198192",
-  name: "UK number to receive verification code",
-  description: "United kingdom (UK) number verification for any platform or social media account",
-  price: "6000",
-  currency: "NGN",
-  image: "https://i.ibb.co/Q73C02fQ/Screenshot-20251128-040729.png",
-  sellerId: 6976365864,
-  sellerContact: "Whatsapp: +234 916 631 4650",
-  url: "https://i.ibb.co/Q73C02fQ/Screenshot-20251128-040729.png"
-},
-{ id:"P001", name:"Facebook Account", description:"Very good and strong.", price:"4500", currency:"NGN", image:"https://i.ibb.co/1f9GfgZL/IMG-20251124-000420-272.jpg", sellerId: 8111362786, sellerContact: "Whatsapp: +234 916 631 4650", url:"https://www.facebook.com/profile.php?id=61582415454848" },
-{ id: "P176399729659985", name: "Foreign TikTok", description: "34 followers, 11 likes. Active.", price: "7000", currency: "NGN", image: "https://www.tiktok.com/@smith30114?_r=1&_t=ZS-91fY6ubi0yT", sellerId: 8111362786, sellerContact: "Whatsapp: +2349166314650", url: "https://www.tiktok.com/@smith30114?_r=1&_t=ZS-91fY6ubi0yT" }
+}
 ];
